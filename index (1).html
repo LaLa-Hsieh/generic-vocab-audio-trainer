@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>初級日語 10-13課 有聲自學單字測驗軟體</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Noto Sans JP & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans JP', 'sans-serif'],
+            jp: ['Noto Sans JP', 'sans-serif']
+          },
+          colors: {
+            jpblue: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    :root {
+      --safe-t: env(safe-area-inset-top, 0px);
+      --safe-b: env(safe-area-inset-bottom, 0px);
+      --safe-l: env(safe-area-inset-left, 0px);
+      --safe-r: env(safe-area-inset-right, 0px);
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      background: #f4f6fb;
+      padding-left: var(--safe-l);
+      padding-right: var(--safe-r);
+    }
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+    ruby { margin: 0 1px; }
+    ruby rt {
+      font-size: 0.55em;
+      color: #6366f1;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    /* Animated Card Pulse */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-effect { animation: pulse-ring 2s infinite ease-in-out; }
+
+    @keyframes mic-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.55); }
+      70% { box-shadow: 0 0 0 18px rgba(239,68,68,0); }
+      100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+    }
+    .mic-recording { animation: mic-pulse 1.4s infinite; background-color: #ef4444 !important; }
+
+    @keyframes fade-slide-in {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-slide-in { animation: fade-slide-in 0.25s ease-out; }
+
+    /* 發音播放中的視覺強調（顯眼化提示） */
+    @keyframes audio-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.45); }
+      50% { box-shadow: 0 0 0 8px rgba(99,102,241,0.15); }
+    }
+    .audio-active {
+      animation: audio-glow 0.6s ease-in-out infinite;
+      background-color: #4f46e5 !important;
+      color: #ffffff !important;
+      border-color: #4f46e5 !important;
+    }
+    .audio-active i { color: #ffffff !important; }
+
+    /* Safe-area aware sticky offsets */
+    #app-header { padding-top: var(--safe-t); }
+    #mode-nav { top: calc(57px + var(--safe-t)); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white">
+
+  <!-- In-App Browser Compatibility Notice -->
+  <div id="webview-banner" class="hidden bg-amber-400 text-amber-950 text-xs sm:text-sm px-3 py-2 flex items-start sm:items-center justify-between gap-2" style="padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));">
+    <div class="flex items-start sm:items-center gap-2">
+      <i class="fa-solid fa-triangle-exclamation mt-0.5 sm:mt-0"></i>
+      <span>偵測到您可能正在 LINE / Teams 等 App 內建瀏覽器開啟本頁面，語音辨識與錄音功能可能無法使用。建議點擊右上角「⋯」選擇「在瀏覽器中開啟」以獲得完整功能。</span>
+    </div>
+    <button onclick="dismissWebviewBanner()" class="p-1 flex-shrink-0"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <!-- Global "Now Playing" Audio Badge -->
+  <div id="now-playing-badge" class="hidden fixed left-1/2 -translate-x-1/2 z-[60] bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-2" style="bottom: calc(1rem + env(safe-area-inset-bottom, 0px));">
+    <i class="fa-solid fa-volume-high animate-pulse"></i> 播放發音中…
+  </div>
+
+  <!-- Header -->
+  <header id="app-header" class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-gradient-to-tr from-red-600 to-rose-500 text-white px-2.5 py-1.5 rounded-xl font-black text-lg tracking-wider shadow-sm flex items-center justify-center">
+          日語
+        </div>
+        <div>
+          <h1 class="font-bold text-base md:text-lg tracking-wide leading-tight flex items-center gap-1.5">
+            初級日語單字測驗
+            <span class="text-[10px] bg-red-500/20 text-red-300 border border-red-500/30 px-1.5 py-0.5 rounded-full font-mono">10-13課</span>
+          </h1>
+          <p class="text-xs text-slate-400">五十音順 / 有聲多模組智慧自学系統</p>
+        </div>
+      </div>
+      
+      <!-- Right Quick Actions -->
+      <div class="flex items-center space-x-1 sm:space-x-2">
+        <button onclick="openStatsModal()" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition" title="學習統計">
+          <i class="fa-solid fa-chart-pie text-lg"></i>
+        </button>
+        <button id="tts-settings-btn" onclick="openTTSSettings()" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition" title="發音與語音設定">
+          <i class="fa-solid fa-volume-high text-lg"></i>
+        </button>
+        <button onclick="toggleFavoritesOnly()" id="fav-filter-btn" class="p-2 text-amber-400 hover:bg-slate-800 rounded-lg transition relative" title="僅顯示星號收藏">
+          <i class="fa-far fa-star text-lg" id="fav-icon"></i>
+          <span id="fav-badge" class="hidden absolute -top-1 -right-1 bg-amber-500 text-slate-900 font-bold text-[9px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+        </button>
+        <button onclick="toggleMistakesOnly()" id="mistake-filter-btn" class="p-2 text-rose-400 hover:bg-slate-800 rounded-lg transition relative" title="僅練習錯題複習">
+          <i class="fa-solid fa-rotate-left text-lg"></i>
+          <span id="mistake-badge" class="hidden absolute -top-1 -right-1 bg-rose-500 text-white font-bold text-[9px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Mode Navigation Tabs -->
+  <nav id="mode-nav" class="bg-white border-b border-slate-200 sticky z-40 shadow-sm">
+    <div class="max-w-5xl mx-auto px-2 flex overflow-x-auto scrollbar-hide text-sm font-medium">
+      <button onclick="switchMode('list')" id="tab-list" class="flex-1 min-w-[95px] py-3 px-2 text-center border-b-2 border-indigo-600 text-indigo-600 font-bold whitespace-nowrap transition">
+        <i class="fa-solid fa-list-ol mr-1"></i> 單字總覽
+      </button>
+      <button onclick="switchMode('card')" id="tab-card" class="flex-1 min-w-[95px] py-3 px-2 text-center border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap transition">
+        <i class="fa-solid fa-clone mr-1"></i> 卡片翻牌
+      </button>
+      <button onclick="switchMode('quiz')" id="tab-quiz" class="flex-1 min-w-[95px] py-3 px-2 text-center border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap transition">
+        <i class="fa-solid fa-circle-question mr-1"></i> 多選測驗
+      </button>
+      <button onclick="switchMode('listening')" id="tab-listening" class="flex-1 min-w-[95px] py-3 px-2 text-center border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap transition">
+        <i class="fa-solid fa-headphones mr-1"></i> 聽力測驗
+      </button>
+      <button onclick="switchMode('spelling')" id="tab-spelling" class="flex-1 min-w-[95px] py-3 px-2 text-center border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap transition">
+        <i class="fa-solid fa-pen-keyboard mr-1"></i> 假名拼寫
+      </button>
+      <button onclick="switchMode('speak')" id="tab-speak" class="flex-1 min-w-[95px] py-3 px-2 text-center border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap transition">
+        <i class="fa-solid fa-microphone mr-1"></i> 口說跟讀
+      </button>
+      <button onclick="switchMode('match')" id="tab-match" class="flex-1 min-w-[95px] py-3 px-2 text-center border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap transition">
+        <i class="fa-solid fa-puzzle-piece mr-1"></i> 連連看
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-5xl mx-auto w-full px-3 sm:px-4 py-4 flex-1">
+    
+    <!-- App Cover Banner -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-indigo-800 to-slate-900 rounded-3xl p-5 mb-4 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="absolute -right-8 -top-8 w-40 h-40 rounded-full bg-rose-500/20 blur-2xl pointer-events-none"></div>
+      <div class="absolute -left-10 -bottom-10 w-40 h-40 rounded-full bg-indigo-400/20 blur-2xl pointer-events-none"></div>
+      <div class="relative space-y-1 text-center md:text-left">
+        <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/15 text-rose-100 backdrop-blur-sm mb-1 border border-white/10">
+          ✨ 10-13課 語彙全收錄
+        </div>
+        <h2 class="text-xl md:text-2xl font-black tracking-tight font-jp">あいうえお順・日本語単語リスニング＆セルフテスト</h2>
+        <p class="text-xs text-indigo-100 max-w-lg">提供正確振り仮名標註、有聲發音、卡片複習、口說跟讀評分、錯題複習與記憶連連看，幫助您紮實掌握基礎日語單字！</p>
+      </div>
+      <div class="relative flex items-center gap-2 flex-shrink-0 flex-wrap justify-center">
+        <button onclick="switchMode('quiz')" class="px-4 py-2 bg-white text-indigo-700 font-bold text-xs rounded-xl shadow hover:bg-indigo-50 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-play"></i> 開始測驗
+        </button>
+        <button onclick="switchMode('speak')" class="px-4 py-2 bg-rose-500 text-white font-bold text-xs rounded-xl shadow hover:bg-rose-600 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-microphone"></i> 口說跟讀
+        </button>
+        <button onclick="switchMode('card')" class="px-4 py-2 bg-white/10 text-white font-bold text-xs rounded-xl border border-white/20 hover:bg-white/20 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-clone"></i> 翻牌卡片
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Bar Controls -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-3 mb-4 space-y-2.5">
+      <div class="flex flex-wrap gap-2 items-center justify-between">
+        
+        <!-- Lesson Filter Buttons (可複選＝自訂單字範圍) -->
+        <div class="flex items-center space-x-1 overflow-x-auto scrollbar-hide py-0.5">
+          <span class="text-xs font-bold text-slate-400 mr-1 whitespace-nowrap">課程 (可複選):</span>
+          <button onclick="setLessonFilter('all')" id="lesson-btn-all" class="px-3 py-1 text-xs rounded-full bg-indigo-600 text-white font-semibold shadow-sm transition">全 4 課</button>
+          <button onclick="setLessonFilter(10)" id="lesson-btn-10" class="px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-medium transition">第10課</button>
+          <button onclick="setLessonFilter(11)" id="lesson-btn-11" class="px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-medium transition">第11課</button>
+          <button onclick="setLessonFilter(12)" id="lesson-btn-12" class="px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-medium transition">第12課</button>
+          <button onclick="setLessonFilter(13)" id="lesson-btn-13" class="px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-medium transition">第13課</button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative flex-1 min-w-[170px] max-w-xs">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+          <input type="text" id="search-input" oninput="handleSearch()" placeholder="搜尋漢字 / 假名 / 中文..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-100/80 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition">
+        </div>
+
+        <!-- Question Count Selector (自訂測驗題數) -->
+        <div class="flex items-center space-x-1.5 whitespace-nowrap">
+          <span class="text-xs font-bold text-slate-400">題數:</span>
+          <select id="question-count-select" onchange="setSessionQuestionCount(this.value)" class="text-xs bg-slate-100/80 border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="5">5 題</option>
+            <option value="10" selected>10 題</option>
+            <option value="15">15 題</option>
+            <option value="20">20 題</option>
+            <option value="all">全部</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Gojuon (五十音) Row Filter Bar -->
+      <div class="flex items-center space-x-1 overflow-x-auto scrollbar-hide pt-1.5 border-t border-slate-100 text-xs">
+        <span class="text-slate-400 font-bold whitespace-nowrap text-[11px] mr-1">五十音:</span>
+        <button onclick="setGojuonFilter('all')" id="gojuon-btn-all" class="px-2.5 py-0.5 rounded-md bg-slate-800 text-white font-medium">全行</button>
+        <button onclick="setGojuonFilter('あ')" id="gojuon-btn-あ" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">あ</button>
+        <button onclick="setGojuonFilter('か')" id="gojuon-btn-か" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">か</button>
+        <button onclick="setGojuonFilter('さ')" id="gojuon-btn-さ" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">さ</button>
+        <button onclick="setGojuonFilter('た')" id="gojuon-btn-た" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">た</button>
+        <button onclick="setGojuonFilter('な')" id="gojuon-btn-な" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">な</button>
+        <button onclick="setGojuonFilter('は')" id="gojuon-btn-は" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">は</button>
+        <button onclick="setGojuonFilter('ま')" id="gojuon-btn-ま" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">ま</button>
+        <button onclick="setGojuonFilter('や')" id="gojuon-btn-や" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">や</button>
+        <button onclick="setGojuonFilter('ら')" id="gojuon-btn-ら" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">ら</button>
+        <button onclick="setGojuonFilter('わ')" id="gojuon-btn-わ" class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200">わ/他</button>
+      </div>
+    </div>
+
+    <!-- MODE 1: Vocabulary List View -->
+    <div id="view-list" class="space-y-3">
+      <div class="flex justify-between items-center px-1 text-xs text-slate-500">
+        <span id="list-count-info" class="font-medium">載入單字中...</span>
+        <div class="flex items-center space-x-3">
+          <label class="inline-flex items-center cursor-pointer select-none">
+            <input type="checkbox" id="toggle-furigana" checked onchange="renderListView()" class="rounded text-blue-600 focus:ring-0">
+            <span class="ml-1 text-slate-600">振假名 (Ruby)</span>
+          </label>
+          <label class="inline-flex items-center cursor-pointer select-none">
+            <input type="checkbox" id="toggle-romaji" checked onchange="renderListView()" class="rounded text-blue-600 focus:ring-0">
+            <span class="ml-1 text-slate-600">羅馬字</span>
+          </label>
+        </div>
+      </div>
+
+      <div id="vocabulary-container" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <!-- Dynamic Vocabulary Cards -->
+      </div>
+    </div>
+
+    <!-- MODE 2: Card Flashcard View -->
+    <div id="view-card" class="hidden flex flex-col items-center justify-center py-2">
+      <div class="w-full max-w-md">
+        
+        <!-- Card Navigation Control Bar -->
+        <div class="flex justify-between items-center mb-3 px-2 text-slate-600 text-sm">
+          <span id="card-index-indicator" class="font-bold text-slate-500 font-mono">1 / 50</span>
+          <div class="flex items-center space-x-2">
+            <button onclick="toggleAutoPlay()" id="autoplay-btn" class="px-3 py-1 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl text-xs font-semibold flex items-center transition">
+              <i class="fa-solid fa-play mr-1 text-blue-600"></i> 自動輪播
+            </button>
+            <button onclick="toggleCardFavorite()" id="card-fav-btn" class="p-1.5 text-slate-400 hover:text-amber-500 transition">
+              <i class="fa-far fa-star text-lg"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3D Flip Card Container with Touch Swipe Event Listeners -->
+        <div id="flashcard-box" onclick="flipCard()" class="perspective-1000 cursor-pointer w-full h-80 mb-6 select-none">
+          <div id="flashcard" class="relative w-full h-full duration-500 transform-style-3d bg-white rounded-3xl shadow-lg border border-slate-200 p-6 flex flex-col justify-between items-center text-center">
+            
+            <!-- Front Face -->
+            <div class="absolute inset-0 backface-hidden p-6 flex flex-col justify-between items-center bg-gradient-to-b from-white to-blue-50/30 rounded-3xl border-2 border-blue-100">
+              <div class="w-full flex justify-between items-center">
+                <span id="card-lesson-tag" class="text-xs font-bold text-blue-600 bg-blue-100/80 px-3 py-1 rounded-full">第10課</span>
+                <button onclick="event.stopPropagation(); playCurrentAudio(this)" class="w-10 h-10 text-blue-600 bg-white shadow-sm border border-blue-100 hover:bg-blue-50 rounded-full transition flex items-center justify-center" title="點擊發音 (或按 KeyUp)">
+                  <i class="fa-solid fa-volume-high text-lg"></i>
+                </button>
+              </div>
+
+              <div class="my-auto space-y-3">
+                <div id="card-kanji" class="text-4xl md:text-5xl font-black text-slate-900 font-jp tracking-tight leading-loose">急ぐ</div>
+                <div id="card-romaji" class="text-xs text-slate-400 font-mono tracking-wider">isogu</div>
+              </div>
+
+              <div class="text-xs text-slate-400 flex items-center bg-slate-100 px-3 py-1 rounded-full">
+                <i class="fa-solid fa-rotate mr-1.5 text-blue-500"></i> 點擊卡片或按 <kbd class="px-1 bg-white border border-slate-300 rounded font-mono text-[10px] mx-0.5">Space</kbd> 翻頁
+              </div>
+            </div>
+
+            <!-- Back Face -->
+            <div class="absolute inset-0 backface-hidden rotate-y-180 p-6 flex flex-col justify-between items-center bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white rounded-3xl shadow-xl">
+              <div class="w-full text-right">
+                <span id="card-pos" class="text-xs font-semibold text-blue-200 bg-slate-800/80 border border-slate-700 px-3 py-1 rounded-full">動詞 I</span>
+              </div>
+
+              <div class="my-auto space-y-3">
+                <div id="card-meaning-zh" class="text-2xl md:text-3xl font-extrabold text-amber-300 tracking-wide">趕快、急忙</div>
+                <div id="card-back-japanese" class="text-sm text-slate-300 font-jp bg-slate-800/50 px-3 py-1 rounded-lg">急ぐ (いそぐ)</div>
+              </div>
+
+              <div class="text-xs text-slate-400">
+                點擊翻回正面
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between items-center gap-3">
+          <button onclick="prevCard()" class="flex-1 py-3 bg-white border border-slate-200 text-slate-700 font-bold rounded-2xl shadow-sm hover:bg-slate-50 active:scale-95 transition flex items-center justify-center">
+            <i class="fa-solid fa-chevron-left mr-2 text-xs"></i> 上一個
+          </button>
+          <button onclick="playCurrentAudio(this)" class="py-3 px-4 bg-blue-50 text-blue-600 border border-blue-200 rounded-2xl hover:bg-blue-100 active:scale-95 transition">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+          <button onclick="nextCard()" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl shadow-md hover:bg-blue-700 active:scale-95 transition flex items-center justify-center">
+            下一個 <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODE 3: Multiple Choice Quiz View -->
+    <div id="view-quiz" class="hidden flex flex-col items-center justify-center py-2">
+      <div class="w-full max-w-lg bg-white rounded-3xl shadow-sm border border-slate-200 p-6 space-y-6">
+        
+        <!-- Quiz Score Header -->
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <div>
+            <span class="text-xs font-bold text-slate-400">進度</span>
+            <div id="quiz-progress-text" class="text-sm font-black text-slate-800">問題 1 / 10</div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-bold text-slate-400">當前得分</span>
+            <div id="quiz-score-text" class="text-sm font-black text-blue-600">0 分</div>
+          </div>
+        </div>
+
+        <!-- Question Title Area -->
+        <div class="text-center py-5 px-3 space-y-2 bg-slate-50/80 rounded-2xl border border-slate-100">
+          <div class="text-xs text-blue-600 font-bold tracking-wider" id="quiz-question-type">請選擇對應的中文意思</div>
+          <div id="quiz-question-word" class="text-3xl font-black text-slate-900 font-jp">急ぐ</div>
+          <div id="quiz-question-sub" class="text-sm text-slate-500 font-jp">いそぐ</div>
+          <button onclick="playQuizAudio(this)" class="mt-2 inline-flex items-center space-x-1.5 px-3 py-1 bg-white border border-slate-200 text-blue-600 rounded-full text-xs font-semibold hover:bg-blue-50 transition">
+            <i class="fa-solid fa-volume-high"></i> <span>再次發音</span>
+          </button>
+        </div>
+
+        <!-- Options Container -->
+        <div id="quiz-options-container" class="grid grid-cols-1 gap-3">
+          <!-- JS Dynamic Option Buttons -->
+        </div>
+
+        <!-- Feedback Box -->
+        <div id="quiz-feedback-box" class="hidden p-3.5 rounded-2xl text-center text-sm font-bold"></div>
+        <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden w-full py-3.5 bg-blue-600 text-white font-bold rounded-2xl shadow-md hover:bg-blue-700 transition">
+          下一題 <i class="fa-solid fa-arrow-right ml-1"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- MODE 4: Listening Comprehension Test View -->
+    <div id="view-listening" class="hidden flex flex-col items-center justify-center py-2">
+      <div class="w-full max-w-lg bg-white rounded-3xl shadow-sm border border-slate-200 p-6 space-y-6 text-center">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <span class="text-xs font-bold text-slate-400">聽力辨識測試</span>
+          <span id="listening-score" class="text-sm font-bold text-blue-600">正確: 0</span>
+        </div>
+
+        <div class="py-6 space-y-4">
+          <button onclick="playListeningAudio(this)" class="w-24 h-24 mx-auto bg-gradient-to-tr from-blue-600 to-indigo-500 text-white rounded-full flex items-center justify-center text-4xl shadow-lg hover:scale-105 transition active:scale-95 group">
+            <i class="fa-solid fa-volume-high group-hover:animate-bounce"></i>
+          </button>
+          <p class="text-xs text-slate-500 font-medium">點擊上方藍色喇叭聽取日文發音，並選出正確單字</p>
+        </div>
+
+        <!-- Options -->
+        <div id="listening-options" class="grid grid-cols-1 gap-3 text-left">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MODE 5: Kana Input / Spelling Test View -->
+    <div id="view-spelling" class="hidden flex flex-col items-center justify-center py-2">
+      <div class="w-full max-w-lg bg-white rounded-3xl shadow-sm border border-slate-200 p-6 space-y-6">
+        <div class="text-center border-b border-slate-100 pb-3">
+          <span class="text-xs font-bold text-slate-400">平假名 / 拼寫自填測驗</span>
+        </div>
+
+        <div class="text-center space-y-2 py-3 bg-slate-50 rounded-2xl border border-slate-100">
+          <div id="spelling-kanji" class="text-4xl font-black text-slate-900 font-jp">急ぐ</div>
+          <div id="spelling-meaning" class="text-sm text-amber-600 font-semibold">趕快、急忙</div>
+          <button onclick="playSpellingAudio(this)" class="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white rounded-full text-xs font-bold shadow-sm hover:bg-indigo-700 active:scale-95 transition">
+            <i class="fa-solid fa-volume-high"></i> 聽發音提示
+          </button>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex justify-between items-center text-xs">
+            <label class="font-bold text-slate-600">請輸入對應的平假名（或羅馬字）：</label>
+            <span class="text-slate-400 text-[11px]">支援羅馬字自動轉換</span>
+          </div>
+          <input type="text" id="spelling-input" autocomplete="off" placeholder="例如：いそぐ 或 isogu" class="w-full px-4 py-3 text-lg border border-slate-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:outline-none font-jp text-center font-bold">
+          <button onclick="checkSpellingAnswer()" class="w-full py-3.5 bg-blue-600 text-white font-bold rounded-2xl shadow-md hover:bg-blue-700 transition">
+            確認答案
+          </button>
+        </div>
+
+        <div id="spelling-result" class="hidden p-3.5 rounded-2xl text-center font-bold text-sm"></div>
+      </div>
+    </div>
+
+    <!-- MODE 6: Speaking / Pronunciation Practice View (語音辨識錄音跟讀評分) -->
+    <div id="view-speak" class="hidden flex flex-col items-center justify-center py-2">
+      <div class="w-full max-w-lg bg-white rounded-3xl shadow-sm border border-slate-200 p-6 space-y-5 text-center">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+          <span class="text-xs font-bold text-slate-400">口說跟讀・錄音辨識評分</span>
+          <span id="speak-progress" class="text-sm font-bold text-indigo-600">-- / --</span>
+        </div>
+
+        <div id="speak-unsupported" class="hidden p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-800 text-left space-y-1">
+          <p class="font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>此瀏覽器不支援語音辨識錄音功能</p>
+          <p>建議改用電腦版 Chrome / Edge，或手機版 Chrome（Android）／Safari（iOS 部分支援）開啟本頁面以使用口說跟讀評分。若您在 LINE 或 Teams 等 App 內開啟，請改用「在瀏覽器中開啟」。</p>
+        </div>
+
+        <div id="speak-content" class="space-y-4">
+          <div class="py-4 space-y-2 bg-slate-50 rounded-2xl border border-slate-100">
+            <div id="speak-kanji" class="text-3xl font-black text-slate-900 font-jp leading-loose">--</div>
+            <div id="speak-meaning" class="text-sm text-amber-600 font-semibold">--</div>
+            <button onclick="playSpeakAudio(this)" class="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white rounded-full text-xs font-bold shadow-sm hover:bg-indigo-700 active:scale-95 transition">
+              <i class="fa-solid fa-volume-high"></i> 先聽範例發音
+            </button>
+          </div>
+
+          <button id="speak-mic-btn" onclick="toggleRecording()" class="w-24 h-24 mx-auto bg-gradient-to-tr from-indigo-600 to-rose-500 text-white rounded-full flex items-center justify-center text-3xl shadow-lg hover:scale-105 active:scale-95 transition">
+            <i class="fa-solid fa-microphone"></i>
+          </button>
+          <p id="speak-hint" class="text-xs text-slate-500">點擊麥克風後請對著手機/電腦清楚唸出上方單字</p>
+
+          <div id="speak-result" class="hidden p-3.5 rounded-2xl text-left text-sm space-y-1"></div>
+
+          <button onclick="nextSpeakWord()" class="w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition text-sm">
+            下一個單字 <i class="fa-solid fa-arrow-right ml-1"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODE 6: Pair Matching Game View -->
+    <div id="view-match" class="hidden space-y-4">
+      <div class="flex justify-between items-center bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm text-sm">
+        <div>
+          <span class="font-bold text-slate-800">記憶翻牌連連看</span>
+          <span class="text-xs text-slate-400 ml-2">配對日文漢字與中文意思</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="text-xs text-slate-500">翻牌步數: <span id="match-moves" class="font-bold text-blue-600 font-mono">0</span></div>
+          <button onclick="initMatchGame()" class="px-3 py-1.5 bg-blue-50 text-blue-600 font-bold rounded-xl text-xs hover:bg-blue-100 transition">
+            <i class="fa-solid fa-rotate-right mr-1"></i> 重開局
+          </button>
+        </div>
+      </div>
+
+      <div id="match-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        <!-- JS filled match grid -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- TTS Settings Modal -->
+  <div id="tts-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-5 border border-slate-100">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base flex items-center">
+          <i class="fa-solid fa-sliders text-blue-600 mr-2"></i> 發音與語音設定
+        </h3>
+        <button onclick="closeTTSSettings()" class="text-slate-400 hover:text-slate-600 p-1">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-sm">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">語音引擎（標準日語 / 東京腔・共通語）</label>
+          <select id="voice-select" onchange="updateSelectedVoice(this.value)" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-2 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="">偵測中…</option>
+          </select>
+          <p id="voice-warning" class="hidden text-[11px] text-amber-600 mt-1">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i>此裝置尚未安裝日文語音引擎，請至系統設定安裝「日本語」語音包後重新整理頁面。
+          </p>
+          <p class="text-[11px] text-slate-400 mt-1">系統內建日文語音（Google 日本語 / Microsoft Nanami・Keita / Apple Kyoko・Otoya 等）預設即為標準語（東京腔基礎共通語），非地方方言。</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">朗讀速度 (<span id="speed-val" class="font-mono text-indigo-600">0.9</span>x)</label>
+          <input type="range" id="tts-speed" min="0.5" max="1.3" step="0.1" value="0.9" oninput="updateSpeechRate(this.value)" class="w-full accent-indigo-600">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">音調 (Pitch: <span id="pitch-val" class="font-mono text-indigo-600">1.0</span>)</label>
+          <input type="range" id="tts-pitch" min="0.8" max="1.2" step="0.1" value="1.0" oninput="updateSpeechPitch(this.value)" class="w-full accent-indigo-600">
+        </div>
+
+        <div class="pt-2">
+          <button onclick="testTTS(this)" class="w-full py-2.5 bg-slate-100 text-slate-700 text-xs font-bold rounded-xl hover:bg-slate-200 transition flex items-center justify-center">
+            <i class="fa-solid fa-volume-high mr-2 text-indigo-600"></i> 測試語音 (こんにちは)
+          </button>
+        </div>
+      </div>
+
+      <button onclick="closeTTSSettings()" class="w-full py-3 bg-blue-600 text-white font-bold text-sm rounded-2xl shadow-md hover:bg-blue-700 transition">
+        儲存設定
+      </button>
+    </div>
+  </div>
+
+  <!-- Global Quiz Result Modal -->
+  <div id="result-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4 border border-slate-100">
+      <div class="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl">
+        <i class="fa-solid fa-trophy" id="result-icon"></i>
+      </div>
+      <h3 id="result-title" class="font-black text-xl text-slate-800">測驗完成！</h3>
+      <p id="result-desc" class="text-sm text-slate-600">您的得分為：80 分</p>
+      
+      <div class="pt-2">
+        <button onclick="closeResultModal()" class="w-full py-3 bg-blue-600 text-white font-bold text-sm rounded-2xl shadow-md hover:bg-blue-700 transition">
+          確定
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Modal -->
+  <div id="stats-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 border border-slate-100">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">學習統計</h3>
+        <button onclick="closeStatsModal()" class="text-slate-400 hover:text-slate-600">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="space-y-3 text-sm">
+        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl">
+          <span class="text-slate-600">星號收藏單字：</span>
+          <span id="stat-fav-count" class="font-bold text-amber-600">0 個</span>
+        </div>
+        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl">
+          <span class="text-slate-600">多選測驗最高分：</span>
+          <span id="stat-quiz-high" class="font-bold text-blue-600">0 分</span>
+        </div>
+        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl">
+          <span class="text-slate-600">連連看最佳紀錄：</span>
+          <span id="stat-match-best" class="font-bold text-green-600">-- 步</span>
+        </div>
+        <div class="flex justify-between items-center bg-rose-50 p-3 rounded-xl">
+          <span class="text-slate-600">目前錯題數：</span>
+          <span id="stat-mistake-count" class="font-bold text-rose-600">0 個</span>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="clearAllMistakes()" class="flex-1 py-2.5 bg-rose-50 text-rose-600 font-bold text-xs rounded-xl hover:bg-rose-100 transition">
+          <i class="fa-solid fa-trash mr-1"></i> 清除錯題紀錄
+        </button>
+        <button onclick="closeStatsModal()" class="flex-1 py-2.5 bg-slate-800 text-white font-bold text-xs rounded-xl">
+          關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       COMPLETE VOCABULARY DATABASE (LESSONS 10, 11, 12, 13)
+       ========================================================================= */
+    const rawVocabulary = [
+      // --- LESSON 10 ---
+      { id: 1001, lesson: 10, kanji: "東京駅", reading: "とうきょうえき", romaji: "toukyoueki", meaning_zh: "東京車站", pos: "名詞" },
+      { id: 1002, lesson: 10, kanji: "予定", reading: "よてい", romaji: "yotei", meaning_zh: "計劃、預定", pos: "名詞" },
+      { id: 1003, lesson: 10, kanji: "熱海", reading: "あたみ", romaji: "atami", meaning_zh: "熱海 (地名)", pos: "名詞" },
+      { id: 1004, lesson: 10, kanji: "新幹線", reading: "しんかんせん", romaji: "shinkansen", meaning_zh: "新幹線", pos: "名詞" },
+      { id: 1005, lesson: 10, kanji: "こだま号", reading: "こだまごう", romaji: "kodamagou", meaning_zh: "回聲號 (列車名)", pos: "名詞" },
+      { id: 1006, lesson: 10, kanji: "出る", reading: "でる", romaji: "deru", meaning_zh: "離開、出發", pos: "動詞 II" },
+      { id: 1007, lesson: 10, kanji: "着く", reading: "つく", romaji: "tsuku", meaning_zh: "到達、抵達", pos: "動詞 I" },
+      { id: 1008, lesson: 10, kanji: "降りる", reading: "おりる", romaji: "oriru", meaning_zh: "下車", pos: "動詞 II" },
+      { id: 1009, lesson: 10, kanji: "乗る", reading: "のる", romaji: "noru", meaning_zh: "搭乘", pos: "動詞 I" },
+      { id: 1010, lesson: 10, kanji: "下田", reading: "しもだ", romaji: "shimoda", meaning_zh: "下田 (地名)", pos: "名詞" },
+      { id: 1011, lesson: 10, kanji: "途中", reading: "とちゅう", romaji: "tochuu", meaning_zh: "中途、路上", pos: "名詞" },
+      { id: 1012, lesson: 10, kanji: "伊東", reading: "いとう", romaji: "itou", meaning_zh: "伊東 (地名)", pos: "名詞" },
+      { id: 1013, lesson: 10, kanji: "休憩する", reading: "きゅうけいする", romaji: "kyuukeisuru", meaning_zh: "休息", pos: "動詞 III" },
+      { id: 1014, lesson: 10, kanji: "かかる", reading: "かかる", romaji: "kakaru", meaning_zh: "花費 (時間/金錢)", pos: "動詞 I" },
+      { id: 1015, lesson: 10, kanji: "品川", reading: "しながわ", romaji: "shinagawa", meaning_zh: "品川 (地名)", pos: "名詞" },
+      { id: 1016, lesson: 10, kanji: "山手線", reading: "やまのてせん", romaji: "yamanotesen", meaning_zh: "山手線 (鐵路線)", pos: "名詞" },
+      { id: 1017, lesson: 10, kanji: "電車", reading: "でんしゃ", romaji: "densha", meaning_zh: "電車", pos: "名詞" },
+      { id: 1018, lesson: 10, kanji: "歩く", reading: "あるく", romaji: "aruku", meaning_zh: "行走、步行", pos: "動詞 I" },
+      { id: 1019, lesson: 10, kanji: "乗り換える", reading: "のりかえる", romaji: "norikaeru", meaning_zh: "換車、轉乘", pos: "動詞 II" },
+      { id: 1020, lesson: 10, kanji: "お台場", reading: "おだいば", romaji: "odaiba", meaning_zh: "台場 (地名)", pos: "名詞" },
+      { id: 1021, lesson: 10, kanji: "どうやって", reading: "どうやって", romaji: "douyatte", meaning_zh: "如何、怎麼做", pos: "副詞" },
+      { id: 1022, lesson: 10, kanji: "新橋", reading: "しんばし", romaji: "shinbashi", meaning_zh: "新橋 (地名)", pos: "名詞" },
+      { id: 1023, lesson: 10, kanji: "ゆりかもめ", reading: "ゆりかもめ", romaji: "yurikamome", meaning_zh: "百合鷗號 (電車系)", pos: "名詞" },
+      { id: 1024, lesson: 10, kanji: "地下鉄", reading: "ちかてつ", romaji: "chikatetsu", meaning_zh: "地下鐵", pos: "名詞" },
+      { id: 1025, lesson: 10, kanji: "自転車", reading: "じてんしゃ", romaji: "jitensha", meaning_zh: "自行車、腳踏車", pos: "名詞" },
+      { id: 1026, lesson: 10, kanji: "浅草", reading: "あさくさ", romaji: "asakusa", meaning_zh: "淺草 (地名)", pos: "名詞" },
+      { id: 1027, lesson: 10, kanji: "添乗員", reading: "てんじょういん", romaji: "tenjouin", meaning_zh: "導遊、領隊", pos: "名詞" },
+      { id: 1028, lesson: 10, kanji: "もうすぐ", reading: "もうすぐ", romaji: "mousugu", meaning_zh: "快要、馬上", pos: "副詞" },
+      { id: 1029, lesson: 10, kanji: "出発する", reading: "しゅっぱつする", romaji: "shuppatsusuru", meaning_zh: "出發", pos: "動詞 III" },
+      { id: 1030, lesson: 10, kanji: "電話をする", reading: "でんわをする", romaji: "denwaosuru", meaning_zh: "打電話", pos: "動詞 III" },
+      { id: 1031, lesson: 10, kanji: "売店", reading: "ばいてん", romaji: "baiten", meaning_zh: "小賣部、商店", pos: "名詞" },
+      { id: 1032, lesson: 10, kanji: "横", reading: "よこ", romaji: "yoko", meaning_zh: "旁邊、側邊", pos: "名詞" },
+      { id: 1033, lesson: 10, kanji: "急ぐ", reading: "いそぐ", romaji: "isogu", meaning_zh: "趕快、趕緊", pos: "動詞 I" },
+      { id: 1034, lesson: 10, kanji: "女性", reading: "じょせい", romaji: "josei", meaning_zh: "女性", pos: "名詞" },
+      { id: 1035, lesson: 10, kanji: "男性", reading: "だんせい", romaji: "dansei", meaning_zh: "男性", pos: "名詞" },
+      { id: 1036, lesson: 10, kanji: "夕食", reading: "ゆうしょく", romaji: "yuushoku", meaning_zh: "晚餐", pos: "名詞" },
+      { id: 1037, lesson: 10, kanji: "ゆっくりする", reading: "ゆっくりする", romaji: "yukkurisuru", meaning_zh: "悠閒、慢慢做", pos: "動詞 III" },
+      { id: 1038, lesson: 10, kanji: "毎朝", reading: "まいあさ", romaji: "maiasa", meaning_zh: "每天早上", pos: "名詞" },
+      { id: 1039, lesson: 10, kanji: "歌う", reading: "うたう", romaji: "utau", meaning_zh: "唱歌", pos: "動詞 I" },
+      { id: 1040, lesson: 10, kanji: "スケジュール表", reading: "スケジュールひょう", romaji: "sukejuuruhyou", meaning_zh: "行程表", pos: "名詞" },
+      { id: 1041, lesson: 10, kanji: "客", reading: "きゃく", romaji: "kyaku", meaning_zh: "客人", pos: "名詞" },
+      { id: 1042, lesson: 10, kanji: "お疲れさまでした", reading: "おつかれさまでした", romaji: "otsukaresamadeshita", meaning_zh: "辛苦了", pos: "會話句" },
+
+      // --- LESSON 11 ---
+      { id: 1101, lesson: 11, kanji: "カナダ", reading: "かなだ", romaji: "kanada", meaning_zh: "加拿大", pos: "名詞" },
+      { id: 1102, lesson: 11, kanji: "住む", reading: "すむ", romaji: "sumu", meaning_zh: "居住、住在", pos: "動詞 I" },
+      { id: 1103, lesson: 11, kanji: "高校", reading: "こうこう", romaji: "koukou", meaning_zh: "高中", pos: "名詞" },
+      { id: 1104, lesson: 11, kanji: "卒業する", reading: "そつぎょうする", romaji: "sotsugyousuru", meaning_zh: "畢業", pos: "動詞 III" },
+      { id: 1105, lesson: 11, kanji: "関係", reading: "かんけい", romaji: "kankei", meaning_zh: "相關、關係", pos: "名詞" },
+      { id: 1106, lesson: 11, kanji: "勤める", reading: "つとめる", romaji: "tsutomeru", meaning_zh: "工作、任職", pos: "動詞 II" },
+      { id: 1107, lesson: 11, kanji: "辞める", reading: "やめる", romaji: "yameru", meaning_zh: "辭職", pos: "動詞 II" },
+      { id: 1108, lesson: 11, kanji: "自分", reading: "じぶん", romaji: "jibun", meaning_zh: "自己", pos: "名詞" },
+      { id: 1109, lesson: 11, kanji: "洋服", reading: "ようふく", romaji: "youfuku", meaning_zh: "西式服裝", pos: "名詞" },
+      { id: 1110, lesson: 11, kanji: "いろいろ", reading: "いろいろ", romaji: "iroiro", meaning_zh: "各式各樣", pos: "形容動詞" },
+      { id: 1111, lesson: 11, kanji: "デザイナー", reading: "でざいなー", romaji: "dezainaa", meaning_zh: "設計師", pos: "名詞" },
+      { id: 1112, lesson: 11, kanji: "服", reading: "ふく", romaji: "fuku", meaning_zh: "衣服", pos: "名詞" },
+      { id: 1113, lesson: 11, kanji: "興味", reading: "きょうみ", romaji: "kyoumi", meaning_zh: "興趣", pos: "名詞" },
+      { id: 1114, lesson: 11, kanji: "家族", reading: "かぞく", romaji: "kazoku", meaning_zh: "家人、家屬", pos: "名詞" },
+      { id: 1115, lesson: 11, kanji: "祖母", reading: "そぼ", romaji: "sobo", meaning_zh: "(自己的)祖母", pos: "名詞" },
+      { id: 1116, lesson: 11, kanji: "祖父", reading: "そふ", romaji: "sofu", meaning_zh: "(自己的)祖父", pos: "名詞" },
+      { id: 1117, lesson: 11, kanji: "両親", reading: "りょうしん", romaji: "ryoushin", meaning_zh: "父母、雙親", pos: "名詞" },
+      { id: 1118, lesson: 11, kanji: "母", reading: "はは", romaji: "haha", meaning_zh: "家母", pos: "名詞" },
+      { id: 1119, lesson: 11, kanji: "父", reading: "ちち", romaji: "chichi", meaning_zh: "家父", pos: "名詞" },
+      { id: 1120, lesson: 11, kanji: "兄弟", reading: "きょうだい", romaji: "kyoudai", meaning_zh: "兄弟姊妹", pos: "名詞" },
+      { id: 1121, lesson: 11, kanji: "妹", reading: "いもうと", romaji: "imouto", meaning_zh: "(我)妹妹", pos: "名詞" },
+      { id: 1122, lesson: 11, kanji: "弟", reading: "おとうと", romaji: "otouto", meaning_zh: "(我)弟弟", pos: "名詞" },
+      { id: 1123, lesson: 11, kanji: "姉", reading: "あね", romaji: "ane", meaning_zh: "(我)姊姊", pos: "名詞" },
+      { id: 1124, lesson: 11, kanji: "兄", reading: "あに", romaji: "ani", meaning_zh: "(我)哥哥", pos: "名詞" },
+      { id: 1125, lesson: 11, kanji: "おばあさん", reading: "おばあさん", romaji: "obaasan", meaning_zh: "老奶奶、祖母", pos: "名詞" },
+      { id: 1126, lesson: 11, kanji: "おじいさん", reading: "おじいさん", romaji: "ojiisan", meaning_zh: "老爺爺、祖父", pos: "名詞" },
+      { id: 1127, lesson: 11, kanji: "お父さん", reading: "おとうさん", romaji: "otousan", meaning_zh: "(別人的)父親", pos: "名詞" },
+      { id: 1128, lesson: 11, kanji: "お姉さん", reading: "おねえさん", romaji: "oneesan", meaning_zh: "(別人的)姊姊", pos: "名詞" },
+      { id: 1129, lesson: 11, kanji: "お兄さん", reading: "おにいさん", romaji: "oniisan", meaning_zh: "(別人的)哥哥", pos: "名詞" },
+      { id: 1130, lesson: 11, kanji: "入れる", reading: "いれる", romaji: "ireru", meaning_zh: "放進、列入、加上", pos: "動詞 II" },
+      { id: 1131, lesson: 11, kanji: "一人", reading: "ひとり", romaji: "hitori", meaning_zh: "一個人", pos: "名詞" },
+      { id: 1132, lesson: 11, kanji: "経営する", reading: "けいえいする", romaji: "keieisuru", meaning_zh: "經營", pos: "動詞 III" },
+      { id: 1133, lesson: 11, kanji: "貿易会社", reading: "ぼうえきがいしゃ", romaji: "bouekigaisha", meaning_zh: "貿易公司", pos: "名詞" },
+      { id: 1134, lesson: 11, kanji: "結婚する", reading: "けっこんする", romaji: "kekkonsuru", meaning_zh: "結婚", pos: "動詞 III" },
+      { id: 1135, lesson: 11, kanji: "留学する", reading: "りゅうがくする", romaji: "ryuugakusuru", meaning_zh: "留學", pos: "動詞 III" },
+      { id: 1136, lesson: 11, kanji: "経済学", reading: "けいざいがく", romaji: "keizaigaku", meaning_zh: "經濟學", pos: "名詞" },
+      { id: 1137, lesson: 11, kanji: "アルバイトする", reading: "あるばいとする", romaji: "arubaitosuru", meaning_zh: "打工", pos: "動詞 III" },
+      { id: 1138, lesson: 11, kanji: "中学校", reading: "ちゅうがっこう", romaji: "chuugakkou", meaning_zh: "國中、中學", pos: "名詞" },
+      { id: 1139, lesson: 11, kanji: "教師", reading: "きょうし", romaji: "kyoushi", meaning_zh: "教師", pos: "名詞" },
+      { id: 1140, lesson: 11, kanji: "宿題をする", reading: "しゅくだいをする", romaji: "shukudaiosuru", meaning_zh: "做作業", pos: "動詞 III" },
+      { id: 1141, lesson: 11, kanji: "遊ぶ", reading: "あそぶ", romaji: "asobu", meaning_zh: "玩、遊玩", pos: "動詞 I" },
+      { id: 1142, lesson: 11, kanji: "ピアノ", reading: "ぴあの", romaji: "piano", meaning_zh: "鋼琴", pos: "名詞" },
+      { id: 1143, lesson: 11, kanji: "散歩", reading: "さんぽ", romaji: "sanpo", meaning_zh: "散步", pos: "名詞" },
+      { id: 1144, lesson: 11, kanji: "週末", reading: "しゅうまつ", romaji: "shuumatsu", meaning_zh: "週末", pos: "名詞" },
+      { id: 1145, lesson: 11, kanji: "決める", reading: "きめる", romaji: "kimeru", meaning_zh: "決定", pos: "動詞 II" },
+      { id: 1146, lesson: 11, kanji: "調べる", reading: "しらべる", romaji: "shiraberu", meaning_zh: "調查、查閱", pos: "動詞 II" },
+
+      // --- LESSON 12 ---
+      { id: 1201, lesson: 12, kanji: "フライパン", reading: "ふらいぱん", romaji: "furaipan", meaning_zh: "平底鍋、煎鍋", pos: "名詞" },
+      { id: 1202, lesson: 12, kanji: "牛丼", reading: "ぎゅうどん", romaji: "gyuudon", meaning_zh: "牛肉蓋飯", pos: "名詞" },
+      { id: 1203, lesson: 12, kanji: "生徒", reading: "せいと", romaji: "seito", meaning_zh: "學生 (中小學)", pos: "名詞" },
+      { id: 1204, lesson: 12, kanji: "たまねぎ", reading: "たまねぎ", romaji: "tamanegi", meaning_zh: "洋蔥", pos: "名詞" },
+      { id: 1205, lesson: 12, kanji: "切る", reading: "きる", romaji: "kiru", meaning_zh: "剪、切", pos: "動詞 I" },
+      { id: 1206, lesson: 12, kanji: "大きさ", reading: "おおきさ", romaji: "ookisa", meaning_zh: "大小", pos: "名詞" },
+      { id: 1207, lesson: 12, kanji: "半分", reading: "はんぶん", romaji: "hanbun", meaning_zh: "一半", pos: "名詞" },
+      { id: 1208, lesson: 12, kanji: "薄い", reading: "うすい", romaji: "usui", meaning_zh: "薄的", pos: "い形容詞" },
+      { id: 1209, lesson: 12, kanji: "牛肉", reading: "ぎゅうにく", romaji: "gyuuniku", meaning_zh: "牛肉", pos: "名詞" },
+      { id: 1210, lesson: 12, kanji: "次に", reading: "つぎに", romaji: "tsugini", meaning_zh: "接著、其次", pos: "副詞" },
+      { id: 1211, lesson: 12, kanji: "調味料", reading: "ちょうみりょう", romaji: "choumiryou", meaning_zh: "調味料", pos: "名詞" },
+      { id: 1212, lesson: 12, kanji: "火", reading: "ひ", romaji: "hi", meaning_zh: "火", pos: "名詞" },
+      { id: 1213, lesson: 12, kanji: "強さ", reading: "つよさ", romaji: "tsuyosa", meaning_zh: "強度", pos: "名詞" },
+      { id: 1214, lesson: 12, kanji: "中火", reading: "ちゅうび", romaji: "chuubi", meaning_zh: "中火", pos: "名詞" },
+      { id: 1215, lesson: 12, kanji: "煮る", reading: "にる", romaji: "niru", meaning_zh: "煮、燉", pos: "動詞 II" },
+      { id: 1216, lesson: 12, kanji: "質問", reading: "しつもん", romaji: "shitsumon", meaning_zh: "提問、問題", pos: "名詞" },
+      { id: 1217, lesson: 12, kanji: "材料", reading: "ざいりょう", romaji: "zairyou", meaning_zh: "材料、食材", pos: "名詞" },
+      { id: 1218, lesson: 12, kanji: "薄切り", reading: "うすぎり", romaji: "usugiri", meaning_zh: "切薄片", pos: "名詞" },
+      { id: 1219, lesson: 12, kanji: "ねぎ", reading: "ねぎ", romaji: "negi", meaning_zh: "蔥", pos: "名詞" },
+      { id: 1220, lesson: 12, kanji: "少々", reading: "しょうしょう", romaji: "shoushou", meaning_zh: "少許", pos: "副詞" },
+      { id: 1221, lesson: 12, kanji: "ごはん", reading: "ごはん", romaji: "gohan", meaning_zh: "飯、米飯", pos: "名詞" },
+      { id: 1222, lesson: 12, kanji: "大さじ", reading: "おおさじ", romaji: "oosaji", meaning_zh: "大匙", pos: "名詞" },
+      { id: 1223, lesson: 12, kanji: "しょうゆ", reading: "しょうゆ", romaji: "shouyu", meaning_zh: "醬油", pos: "名詞" },
+      { id: 1224, lesson: 12, kanji: "止める", reading: "とめる", romaji: "tomeru", meaning_zh: "關閉 (火/引擎)", pos: "動詞 II" },
+      { id: 1225, lesson: 12, kanji: "自由", reading: "じゆう", romaji: "jiyuu", meaning_zh: "自由", pos: "な形容詞" },
+      { id: 1226, lesson: 12, kanji: "早い", reading: "はやい", romaji: "hayai", meaning_zh: "早的、快的", pos: "い形容詞" },
+      { id: 1227, lesson: 12, kanji: "遅い", reading: "おそい", romaji: "osoi", meaning_zh: "晚的、慢的", pos: "い形容詞" },
+      { id: 1228, lesson: 12, kanji: "洗濯機", reading: "せんたくき", romaji: "sentakuki", meaning_zh: "洗衣機", pos: "名詞" },
+      { id: 1229, lesson: 12, kanji: "集合する", reading: "しゅうごうする", romaji: "shuugousuru", meaning_zh: "集合", pos: "動詞 III" },
+      { id: 1230, lesson: 12, kanji: "始める", reading: "はじめる", romaji: "hajimeru", meaning_zh: "開始", pos: "動詞 II" },
+      { id: 1231, lesson: 12, kanji: "柔らかい", reading: "やわらかい", romaji: "yawarakai", meaning_zh: "柔軟的", pos: "い形容詞" },
+      { id: 1232, lesson: 12, kanji: "簡単", reading: "かんたん", romaji: "kantan", meaning_zh: "簡單的", pos: "な形容詞" },
+      { id: 1233, lesson: 12, kanji: "固い", reading: "かたい", romaji: "katai", meaning_zh: "硬的、堅固的", pos: "い形容詞" },
+      { id: 1234, lesson: 12, kanji: "注意する", reading: "ちゅういする", romaji: "chuuisuru", meaning_zh: "注意、小心", pos: "動詞 III" },
+      { id: 1235, lesson: 12, kanji: "温かい", reading: "あたたかい", romaji: "atatakai", meaning_zh: "溫熱的", pos: "い形容詞" },
+      { id: 1236, lesson: 12, kanji: "旅館", reading: "りょかん", romaji: "ryokan", meaning_zh: "日式旅館", pos: "名詞" },
+      { id: 1237, lesson: 12, kanji: "気温", reading: "きおん", romaji: "kion", meaning_zh: "氣溫", pos: "名詞" },
+      { id: 1238, lesson: 12, kanji: "高い", reading: "たかい", romaji: "takai", meaning_zh: "高的", pos: "い形容詞" },
+      { id: 1239, lesson: 12, kanji: "建物", reading: "たてもの", romaji: "tatemono", meaning_zh: "建築物", pos: "名詞" },
+      { id: 1240, lesson: 12, kanji: "甘い", reading: "あまい", romaji: "amai", meaning_zh: "甜的", pos: "い形容詞" },
+      { id: 1241, lesson: 12, kanji: "桜", reading: "さくら", romaji: "sakura", meaning_zh: "櫻花", pos: "名詞" },
+      { id: 1242, lesson: 12, kanji: "春", reading: "はる", romaji: "haru", meaning_zh: "春天", pos: "名詞" },
+      { id: 1243, lesson: 12, kanji: "咲く", reading: "さく", romaji: "saku", meaning_zh: "花開", pos: "動詞 I" },
+
+      // --- LESSON 13 ---
+      { id: 1301, lesson: 13, kanji: "東都大学", reading: "とうとだいがく", romaji: "toutodaigaku", meaning_zh: "東都大學", pos: "名詞" },
+      { id: 1302, lesson: 13, kanji: "私達", reading: "わたしたち", romaji: "watashitachi", meaning_zh: "我們", pos: "代名詞" },
+      { id: 1303, lesson: 13, kanji: "インタビューする", reading: "いんたびゅーする", romaji: "intabyuusuru", meaning_zh: "採訪", pos: "動詞 III" },
+      { id: 1304, lesson: 13, kanji: "質問する", reading: "しつもんする", romaji: "shitsumonsuru", meaning_zh: "提問、詢問", pos: "動詞 III" },
+      { id: 1305, lesson: 13, kanji: "生活", reading: "せいかつ", romaji: "seikatsu", meaning_zh: "生活", pos: "名詞" },
+      { id: 1306, lesson: 13, kanji: "学部", reading: "がくぶ", romaji: "gakubu", meaning_zh: "(大學)學院", pos: "名詞" },
+      { id: 1307, lesson: 13, kanji: "経済学部", reading: "けいざいがくぶ", romaji: "keizaigakubu", meaning_zh: "經濟學院", pos: "名詞" },
+      { id: 1308, lesson: 13, kanji: "理学部", reading: "りがくぶ", romaji: "rigakubu", meaning_zh: "理學院", pos: "名詞" },
+      { id: 1309, lesson: 13, kanji: "どうして", reading: "どうして", romaji: "doushite", meaning_zh: "為什麼", pos: "副詞" },
+      { id: 1310, lesson: 13, kanji: "レポート", reading: "れぽーと", romaji: "repooto", meaning_zh: "報告", pos: "名詞" },
+      { id: 1311, lesson: 13, kanji: "大学院", reading: "だいがくいん", romaji: "daigakuin", meaning_zh: "研究所", pos: "名詞" },
+      { id: 1312, lesson: 13, kanji: "お茶", reading: "おちゃ", romaji: "ocha", meaning_zh: "茶、茶葉", pos: "名詞" },
+      { id: 1313, lesson: 13, kanji: "物価", reading: "ぶっか", romaji: "bukka", meaning_zh: "物價", pos: "名詞" },
+      { id: 1314, lesson: 13, kanji: "大家", reading: "おおや", romaji: "ooya", meaning_zh: "房東", pos: "名詞" },
+      { id: 1315, lesson: 13, kanji: "慣れる", reading: "なれる", romaji: "nareru", meaning_zh: "習慣、適應", pos: "動詞 II" },
+      { id: 1316, lesson: 13, kanji: "大勢", reading: "おおぜい", romaji: "oozei", meaning_zh: "多人、眾多", pos: "名詞" },
+      { id: 1317, lesson: 13, kanji: "忙しい", reading: "いそがしい", romaji: "isogashii", meaning_zh: "忙碌的", pos: "い形容詞" },
+      { id: 1318, lesson: 13, kanji: "スキーする", reading: "すきーする", romaji: "sukiisuru", meaning_zh: "滑雪", pos: "動詞 III" },
+      { id: 1319, lesson: 13, kanji: "春休み", reading: "はるやすみ", romaji: "haruyasumi", meaning_zh: "春假", pos: "名詞" },
+      { id: 1320, lesson: 13, kanji: "ホームステイ", reading: "ほーむすてい", romaji: "hoomusutei", meaning_zh: "寄宿家庭", pos: "名詞" },
+      { id: 1321, lesson: 13, kanji: "暇", reading: "ひま", romaji: "hima", meaning_zh: "空閒的", pos: "な形容詞" },
+      { id: 1322, lesson: 13, kanji: "ショッピング", reading: "しょっぴんぐ", romaji: "shoppingu", meaning_zh: "購物", pos: "名詞" },
+      { id: 1323, lesson: 13, kanji: "ところで", reading: "ところで", romaji: "tokorode", meaning_zh: "話說回來 (轉折詞)", pos: "接續詞" },
+      { id: 1324, lesson: 13, kanji: "施設", reading: "しせつ", romaji: "shisetsu", meaning_zh: "設施", pos: "名詞" },
+      { id: 1325, lesson: 13, kanji: "思う", reading: "おもう", romaji: "omou", meaning_zh: "想、認為", pos: "動詞 I" },
+      { id: 1326, lesson: 13, kanji: "ソフトクリーム", reading: "そふときりーむ", romaji: "sofutokuriimu", meaning_zh: "霜淇淋", pos: "名詞" },
+      { id: 1327, lesson: 13, kanji: "寂しい", reading: "さびしい", romaji: "sabishii", meaning_zh: "寂寞的、孤獨的", pos: "い形容詞" },
+      { id: 1328, lesson: 13, kanji: "問題", reading: "もんだい", romaji: "mondai", meaning_zh: "問題", pos: "名詞" },
+      { id: 1329, lesson: 13, kanji: "字", reading: "じ", romaji: "ji", meaning_zh: "字、文字", pos: "名詞" },
+      { id: 1330, lesson: 13, kanji: "聞く", reading: "きく", romaji: "kiku", meaning_zh: "聽、詢問", pos: "動詞 I" },
+      { id: 1331, lesson: 13, kanji: "アニメ", reading: "あにめ", romaji: "anime", meaning_zh: "動畫", pos: "名詞" },
+      { id: 1332, lesson: 13, kanji: "テレビ番組", reading: "てれびばんぐみ", romaji: "terebibangumi", meaning_zh: "電視節目", pos: "名詞" },
+      { id: 1333, lesson: 13, kanji: "発表する", reading: "はっぴょうする", romaji: "happyou-suru", meaning_zh: "發表", pos: "動詞 III" },
+      { id: 1334, lesson: 13, kanji: "理由", reading: "りゆう", romaji: "riyuu", meaning_zh: "理由", pos: "名詞" },
+      { id: 1335, lesson: 13, kanji: "驚く", reading: "おどろく", romaji: "odoroku", meaning_zh: "吃驚、驚訝", pos: "動詞 I" }
+    ];
+
+    // SORT DATA BY GOJUON (五十音あいうえお順)
+    function sortByGojuon(list) {
+      return [...list].sort((a, b) => a.reading.localeCompare(b.reading, 'ja'));
+    }
+
+    /* =========================================================================
+       SAFE LOCAL STORAGE (部分瀏覽器 / App內建瀏覽器可能封鎖或限制儲存空間)
+       ========================================================================= */
+    function safeGet(key, fallback) {
+      try {
+        const v = localStorage.getItem(key);
+        return v === null ? fallback : v;
+      } catch (e) { return fallback; }
+    }
+    function safeSet(key, value) {
+      try { localStorage.setItem(key, value); return true; } catch (e) { return false; }
+    }
+
+    /* =========================================================================
+       UTILITIES：HTML 逸出、洗牌、Levenshtein 相似度
+       ========================================================================= */
+    function escapeHtml(str) {
+      return String(str ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function levenshtein(a, b) {
+      if (a === b) return 0;
+      const al = a.length, bl = b.length;
+      if (al === 0) return bl;
+      if (bl === 0) return al;
+      let prev = Array.from({ length: bl + 1 }, (_, i) => i);
+      for (let i = 1; i <= al; i++) {
+        const cur = [i];
+        for (let j = 1; j <= bl; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+        }
+        prev = cur;
+      }
+      return prev[bl];
+    }
+    function similarityRatio(a, b) {
+      const maxLen = Math.max(a.length, b.length) || 1;
+      return 1 - levenshtein(a, b) / maxLen;
+    }
+
+    /* =========================================================================
+       正確振り仮名標註：只在「漢字」字元上加註 <rt>，假名部分維持原樣顯示
+       演算法：將單字拆成「漢字段」與「非漢字段」，非漢字段須與讀音中的相同片段
+       完全對應，藉此推算出每個漢字段對應的讀音片段。
+       ========================================================================= */
+    function splitKanjiSegments(str) {
+      const segments = [];
+      let current = '', currentType = null;
+      const isKanji = ch => /[\u3400-\u9FFF\uF900-\uFAFF]/.test(ch);
+      for (const ch of str) {
+        const type = isKanji(ch) ? 'kanji' : 'other';
+        if (type !== currentType) {
+          if (current) segments.push({ text: current, type: currentType });
+          current = ch; currentType = type;
+        } else {
+          current += ch;
+        }
+      }
+      if (current) segments.push({ text: current, type: currentType });
+      return segments;
+    }
+
+    function buildFuriganaHTML(kanjiWord, reading) {
+      if (!kanjiWord) return '';
+      if (!reading || kanjiWord === reading) return escapeHtml(kanjiWord);
+
+      const segments = splitKanjiSegments(kanjiWord);
+      const hasKanji = segments.some(s => s.type === 'kanji');
+      if (!hasKanji) return escapeHtml(kanjiWord);
+
+      const escapeRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      let pattern = '^';
+      segments.forEach(seg => { pattern += seg.type === 'kanji' ? '(.+?)' : escapeRe(seg.text); });
+      pattern += '$';
+
+      let match = null;
+      try { match = reading.match(new RegExp(pattern)); } catch (e) { match = null; }
+
+      if (!match) {
+        // 無法精準比對時，退回整段套用ruby（優於完全無標註）
+        return `<ruby>${escapeHtml(kanjiWord)}<rt>${escapeHtml(reading)}</rt></ruby>`;
+      }
+
+      let gi = 1;
+      return segments.map(seg => {
+        if (seg.type === 'kanji') {
+          const rt = match[gi++] || '';
+          return `<ruby>${escapeHtml(seg.text)}<rt>${escapeHtml(rt)}</rt></ruby>`;
+        }
+        return escapeHtml(seg.text);
+      }).join('');
+    }
+
+    /* =========================================================================
+       App 內建瀏覽器 (LINE / Teams / FB / IG...) 偵測
+       這類 WebView 常會限制麥克風錄音與語音合成，提前提示使用者改用完整瀏覽器
+       ========================================================================= */
+    function detectRestrictedWebview() {
+      const ua = navigator.userAgent || '';
+      return /Line\/|FBAN|FBAV|Instagram|MicroMessenger|MSTeams|Teams\/|TeamsMobile/i.test(ua);
+    }
+    function dismissWebviewBanner() {
+      document.getElementById('webview-banner').classList.add('hidden');
+      safeSet('app_webview_dismissed', '1');
+    }
+
+    // STATE VARIABLES
+    let currentMode = 'list';
+    let selectedLessons = new Set([10, 11, 12, 13]);
+    let selectedGojuon = 'all';
+    let searchQuery = '';
+    let favorites = new Set(JSON.parse(safeGet('app_favs', '[]')));
+    let favOnlyMode = false;
+    let wrongWords = new Set(JSON.parse(safeGet('app_wrong_words', '[]')));
+    let mistakesOnlyMode = false;
+    let sessionQuestionCount = 10;
+    let filteredVocab = sortByGojuon(rawVocabulary);
+
+    // AUDIO SETTINGS
+    let ttsRate = 0.9;
+    let ttsPitch = 1.0;
+    let selectedVoiceURI = safeGet('app_voice_uri', '');
+    let availableJaVoices = [];
+
+    // CARD MODE STATE
+    let cardIndex = 0;
+    let isFlipped = false;
+    let autoPlayTimer = null;
+
+    // QUIZ STATE
+    let quizQuestionIndex = 0;
+    let quizQuestions = [];
+    let quizScore = 0;
+
+    // LISTENING STATE
+    let listeningQuestions = [];
+    let listeningIndex = 0;
+    let listeningScore = 0;
+
+    // SPELLING STATE (佇列制，避免同一回合重複抽到同一單字)
+    let spellingQueue = [];
+
+    // SPEAKING PRACTICE STATE
+    let speakQueue = [];
+    let speakIndex = 0;
+    let speechRecognizer = null;
+    let isRecording = false;
+
+    // MATCH GAME STATE
+    let matchCards = [];
+    let selectedMatchCards = [];
+    let matchMoves = 0;
+
+    // SWIPE HANDLER
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    window.onload = function() {
+      updateFavBadge();
+      updateMistakeBadge();
+      refreshLessonButtons();
+      renderListView();
+      initSpeechVoices();
+      setupKeyboardAndTouchListeners();
+      if (detectRestrictedWebview() && safeGet('app_webview_dismissed', '') !== '1') {
+        document.getElementById('webview-banner').classList.remove('hidden');
+      }
+      initSpeakModeSupport();
+    };
+
+    function updateFavBadge() {
+      const badge = document.getElementById('fav-badge');
+      if (favorites.size > 0) {
+        badge.textContent = favorites.size;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    // 日文語音（標準東京腔／共通語）偵測與選擇
+    // 說明：市面主流系統內建日文語音引擎（Google 日本語、Microsoft Nanami/Keita、Apple Kyoko/Otoya 等）
+    // 預設即為「標準語（東京方言基礎的共通語）」，並非地方方言；此處只需確保選到 lang 精準為 ja-JP 的引擎。
+    function initSpeechVoices() {
+      if (!('speechSynthesis' in window)) return;
+      const refresh = () => {
+        const voices = window.speechSynthesis.getVoices();
+        availableJaVoices = voices.filter(v => v.lang === 'ja-JP' || v.lang.toLowerCase().startsWith('ja'));
+        populateVoiceSelect();
+      };
+      window.speechSynthesis.onvoiceschanged = refresh;
+      refresh();
+    }
+
+    function pickBestJaVoice() {
+      if (availableJaVoices.length === 0) return null;
+      if (selectedVoiceURI) {
+        const chosen = availableJaVoices.find(v => v.voiceURI === selectedVoiceURI);
+        if (chosen) return chosen;
+      }
+      // 優先：裝置本機(localService)且語系精準為 ja-JP 的標準日文語音
+      const exact = availableJaVoices.filter(v => v.lang === 'ja-JP');
+      const localExact = exact.find(v => v.localService);
+      if (localExact) return localExact;
+      if (exact.length > 0) return exact[0];
+      return availableJaVoices[0];
+    }
+
+    function populateVoiceSelect() {
+      const sel = document.getElementById('voice-select');
+      const warning = document.getElementById('voice-warning');
+      if (!sel) return;
+
+      if (availableJaVoices.length === 0) {
+        sel.innerHTML = `<option value="">尚未偵測到日文語音引擎</option>`;
+        sel.disabled = true;
+        if (warning) warning.classList.remove('hidden');
+        return;
+      }
+      if (warning) warning.classList.add('hidden');
+      sel.disabled = false;
+      sel.innerHTML = availableJaVoices.map(v =>
+        `<option value="${escapeHtml(v.voiceURI)}">${escapeHtml(v.name)} ${v.lang === 'ja-JP' ? '（標準日語）' : `（${escapeHtml(v.lang)}）`}${v.localService ? ' ・裝置內建' : ' ・雲端'}</option>`
+      ).join('');
+
+      const best = pickBestJaVoice();
+      if (best) sel.value = best.voiceURI;
+    }
+
+    function updateSelectedVoice(uri) {
+      selectedVoiceURI = uri;
+      safeSet('app_voice_uri', uri);
+    }
+
+    function playAudio(text, triggerEl) {
+      if (!text) return;
+      if (!('speechSynthesis' in window)) return;
+
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ja-JP';
+      utterance.rate = ttsRate;
+      utterance.pitch = ttsPitch;
+
+      const jaVoice = pickBestJaVoice();
+      if (jaVoice) utterance.voice = jaVoice;
+
+      const badge = document.getElementById('now-playing-badge');
+      const cleanup = () => {
+        if (badge) badge.classList.add('hidden');
+        if (triggerEl) triggerEl.classList.remove('audio-active');
+      };
+      utterance.onstart = () => {
+        if (badge) badge.classList.remove('hidden');
+        if (triggerEl) triggerEl.classList.add('audio-active');
+      };
+      utterance.onend = cleanup;
+      utterance.onerror = cleanup;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function setupKeyboardAndTouchListeners() {
+      document.addEventListener('keydown', (e) => {
+        if (currentMode === 'card') {
+          if (e.key === 'ArrowRight') nextCard();
+          else if (e.key === 'ArrowLeft') prevCard();
+          else if (e.key === ' ') {
+            e.preventDefault();
+            flipCard();
+          } else if (e.key === 'ArrowUp') playCurrentAudio();
+        } else if (currentMode === 'quiz') {
+          if (['1', '2', '3', '4'].includes(e.key)) {
+            const btns = document.querySelectorAll('.quiz-opt-btn');
+            const idx = parseInt(e.key) - 1;
+            if (btns[idx] && !btns[idx].disabled) btns[idx].click();
+          }
+        } else if (currentMode === 'spelling') {
+          if (e.key === 'Enter') checkSpellingAnswer();
+        }
+      });
+
+      const cardContainer = document.getElementById('flashcard-box');
+      if (cardContainer) {
+        cardContainer.addEventListener('touchstart', e => {
+          touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        cardContainer.addEventListener('touchend', e => {
+          touchEndX = e.changedTouches[0].screenX;
+          handleCardSwipe();
+        }, { passive: true });
+      }
+    }
+
+    function handleCardSwipe() {
+      const swipeDistance = touchEndX - touchStartX;
+      if (swipeDistance > 50) {
+        prevCard();
+      } else if (swipeDistance < -50) {
+        nextCard();
+      }
+    }
+
+    function filterVocabulary() {
+      let list = rawVocabulary.filter(item => selectedLessons.has(item.lesson));
+
+      if (favOnlyMode) {
+        list = list.filter(item => favorites.has(item.id));
+      }
+
+      if (mistakesOnlyMode) {
+        list = list.filter(item => wrongWords.has(item.id));
+      }
+
+      if (searchQuery.trim() !== '') {
+        const q = searchQuery.toLowerCase();
+        list = list.filter(item => 
+          item.kanji.includes(q) || 
+          item.reading.includes(q) || 
+          item.romaji.toLowerCase().includes(q) ||
+          item.meaning_zh.includes(q)
+        );
+      }
+
+      if (selectedGojuon !== 'all') {
+        list = list.filter(item => getGojuonGroup(item.reading) === selectedGojuon);
+      }
+
+      filteredVocab = sortByGojuon(list);
+      spellingQueue = [];
+      speakQueue = [];
+
+      if (currentMode === 'list') renderListView();
+      else if (currentMode === 'card') resetCardView();
+      else if (currentMode === 'quiz') startQuiz();
+      else if (currentMode === 'listening') startListeningTest();
+      else if (currentMode === 'spelling') startSpellingTest();
+      else if (currentMode === 'speak') startSpeakSession();
+      else if (currentMode === 'match') initMatchGame();
+    }
+
+    function getGojuonGroup(kana) {
+      const char = kana.charAt(0);
+      if (/[あ-おア-オ]/.test(char)) return 'あ';
+      if (/[か-ごカ-ゴ]/.test(char)) return 'か';
+      if (/[さ-ぞサ-ゾ]/.test(char)) return 'さ';
+      if (/[た-どタ-ド]/.test(char)) return 'た';
+      if (/[な-のナ-ノ]/.test(char)) return 'な';
+      if (/[は-ぼパ-ポハ-ボ]/.test(char)) return 'は';
+      if (/[ま-もマ-モ]/.test(char)) return 'ま';
+      if (/[や-よヤ-ヨ]/.test(char)) return 'や';
+      if (/[ら-ろラ-ロ]/.test(char)) return 'ら';
+      return 'わ';
+    }
+
+    // 課程篩選改為可複選（自訂單字範圍）：可自由組合任意課程
+    function setLessonFilter(lesson) {
+      if (lesson === 'all') {
+        selectedLessons = new Set([10, 11, 12, 13]);
+      } else {
+        const num = parseInt(lesson);
+        if (selectedLessons.has(num)) {
+          if (selectedLessons.size > 1) selectedLessons.delete(num); // 至少保留一課
+        } else {
+          selectedLessons.add(num);
+        }
+      }
+      refreshLessonButtons();
+      filterVocabulary();
+    }
+
+    function refreshLessonButtons() {
+      const allSelected = selectedLessons.size === 4;
+      const allBtn = document.getElementById('lesson-btn-all');
+      if (allBtn) {
+        allBtn.className = allSelected ?
+          "px-3 py-1 text-xs rounded-full bg-indigo-600 text-white font-semibold shadow-sm transition" :
+          "px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-medium transition";
+      }
+      [10, 11, 12, 13].forEach(l => {
+        const btn = document.getElementById(`lesson-btn-${l}`);
+        if (btn) {
+          btn.className = (!allSelected && selectedLessons.has(l)) ?
+            "px-3 py-1 text-xs rounded-full bg-indigo-600 text-white font-semibold shadow-sm transition" :
+            "px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 font-medium transition";
+        }
+      });
+    }
+
+    function setSessionQuestionCount(val) {
+      sessionQuestionCount = val === 'all' ? 'all' : parseInt(val);
+    }
+
+    function resolveSessionCount(poolSize) {
+      return sessionQuestionCount === 'all' ? poolSize : Math.min(sessionQuestionCount, poolSize);
+    }
+
+    function toggleMistakesOnly() {
+      mistakesOnlyMode = !mistakesOnlyMode;
+      const btn = document.getElementById('mistake-filter-btn');
+      if (mistakesOnlyMode) {
+        btn.className = "p-2 text-rose-600 bg-rose-50 rounded-lg transition relative border border-rose-200";
+      } else {
+        btn.className = "p-2 text-rose-400 hover:bg-slate-800 rounded-lg transition relative";
+      }
+      filterVocabulary();
+    }
+
+    function updateMistakeBadge() {
+      const badge = document.getElementById('mistake-badge');
+      if (wrongWords.size > 0) {
+        badge.textContent = wrongWords.size;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function recordMistake(id) {
+      wrongWords.add(id);
+      safeSet('app_wrong_words', JSON.stringify([...wrongWords]));
+      updateMistakeBadge();
+    }
+
+    function clearMistake(id) {
+      if (wrongWords.delete(id)) {
+        safeSet('app_wrong_words', JSON.stringify([...wrongWords]));
+        updateMistakeBadge();
+      }
+    }
+
+    function clearAllMistakes() {
+      wrongWords.clear();
+      safeSet('app_wrong_words', '[]');
+      updateMistakeBadge();
+      openStatsModal();
+    }
+
+    function setGojuonFilter(group) {
+      selectedGojuon = group;
+      ['all', 'あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'].forEach(g => {
+        const btn = document.getElementById(`gojuon-btn-${g}`);
+        if (btn) {
+          btn.className = (g === group) ? 
+            "px-2.5 py-0.5 rounded-md bg-slate-800 text-white font-medium" : 
+            "px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200";
+        }
+      });
+      filterVocabulary();
+    }
+
+    function handleSearch() {
+      searchQuery = document.getElementById('search-input').value;
+      filterVocabulary();
+    }
+
+    function toggleFavoritesOnly() {
+      favOnlyMode = !favOnlyMode;
+      const btn = document.getElementById('fav-filter-btn');
+      const icon = document.getElementById('fav-icon');
+      if (favOnlyMode) {
+        btn.className = "p-2 text-amber-500 bg-amber-50 rounded-lg transition border border-amber-200";
+        icon.className = "fa-solid fa-star text-lg";
+      } else {
+        btn.className = "p-2 text-amber-400 hover:bg-slate-800 rounded-lg transition relative";
+        icon.className = "fa-far fa-star text-lg";
+      }
+      filterVocabulary();
+    }
+
+    function toggleStar(id) {
+      if (favorites.has(id)) {
+        favorites.delete(id);
+      } else {
+        favorites.add(id);
+      }
+      safeSet('app_favs', JSON.stringify([...favorites]));
+      updateFavBadge();
+      filterVocabulary();
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      ['list', 'card', 'quiz', 'listening', 'spelling', 'speak', 'match'].forEach(m => {
+        document.getElementById(`view-${m}`).classList.add('hidden');
+        const tab = document.getElementById(`tab-${m}`);
+        if (m === mode) {
+          tab.className = "flex-1 min-w-[95px] py-3 px-2 text-center border-b-2 border-indigo-600 text-indigo-600 font-bold whitespace-nowrap transition";
+        } else {
+          tab.className = "flex-1 min-w-[95px] py-3 px-2 text-center border-b-2 border-transparent text-slate-600 hover:text-slate-900 whitespace-nowrap transition";
+        }
+      });
+
+      document.getElementById(`view-${mode}`).classList.remove('hidden');
+
+      if (mode === 'list') renderListView();
+      else if (mode === 'card') resetCardView();
+      else if (mode === 'quiz') startQuiz();
+      else if (mode === 'listening') startListeningTest();
+      else if (mode === 'spelling') startSpellingTest();
+      else if (mode === 'speak') startSpeakSession();
+      else if (mode === 'match') initMatchGame();
+    }
+
+    // 1. RENDER LIST VIEW WITH RUBY/FURIGANA SUPPORT
+    function renderListView() {
+      const container = document.getElementById('vocabulary-container');
+      const countInfo = document.getElementById('list-count-info');
+      const showFurigana = document.getElementById('toggle-furigana').checked;
+      const showRomaji = document.getElementById('toggle-romaji').checked;
+
+      countInfo.textContent = `共收錄 ${filteredVocab.length} 個單字 (依五十音あいうえお排列)`;
+
+      if (filteredVocab.length === 0) {
+        container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 text-sm">無符合條件的單字，請重新篩選</div>`;
+        return;
+      }
+
+      container.innerHTML = filteredVocab.map((item) => {
+        const isFav = favorites.has(item.id);
+        const isWrong = wrongWords.has(item.id);
+        const hasKanji = item.kanji !== item.reading;
+
+        return `
+          <div class="bg-white rounded-2xl p-3.5 border border-slate-200/90 shadow-sm flex items-center justify-between hover:border-indigo-300 transition fade-slide-in">
+            <div class="flex items-center space-x-3">
+              <button onclick="playAudio('${item.reading}', this)" class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 flex items-center justify-center transition flex-shrink-0 active:scale-95" title="點擊發音">
+                <i class="fa-solid fa-volume-high text-sm"></i>
+              </button>
+              <div>
+                <div class="flex items-baseline space-x-2 flex-wrap">
+                  ${showFurigana && hasKanji ? `
+                    <span class="font-black text-slate-900 font-jp text-lg leading-loose">${buildFuriganaHTML(item.kanji, item.reading)}</span>
+                  ` : `
+                    <span class="font-black text-slate-900 font-jp text-lg">${escapeHtml(item.kanji)}</span>
+                    <span class="text-xs font-medium text-slate-500 font-jp">(${escapeHtml(item.reading)})</span>
+                  `}
+                  <span class="text-[10px] bg-slate-100 text-slate-500 font-semibold px-1.5 py-0.5 rounded">${item.pos}</span>
+                  ${isWrong ? `<span class="text-[10px] bg-rose-100 text-rose-600 font-semibold px-1.5 py-0.5 rounded">錯題</span>` : ''}
+                </div>
+                <div class="flex items-center space-x-2 text-xs text-slate-500 mt-1">
+                  <span class="text-amber-600 font-bold">${escapeHtml(item.meaning_zh)}</span>
+                  ${showRomaji ? `<span class="text-slate-400 font-mono text-[11px]">${escapeHtml(item.romaji)}</span>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <span class="text-[10px] bg-indigo-50 text-indigo-600 font-bold px-2 py-0.5 rounded-full">第${item.lesson}課</span>
+              <button onclick="toggleStar(${item.id})" class="p-1.5 text-slate-300 hover:text-amber-500 transition">
+                <i class="${isFav ? 'fa-solid text-amber-400' : 'fa-far'} fa-star text-base"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 2. FLASHCARD ENGINE
+    function resetCardView() {
+      cardIndex = 0;
+      isFlipped = false;
+      renderCard();
+    }
+
+    function renderCard() {
+      if (filteredVocab.length === 0) return;
+      const item = filteredVocab[cardIndex];
+
+      document.getElementById('card-index-indicator').textContent = `${cardIndex + 1} / ${filteredVocab.length}`;
+      document.getElementById('card-lesson-tag').textContent = `第 ${item.lesson} 課`;
+      document.getElementById('card-kanji').innerHTML = buildFuriganaHTML(item.kanji, item.reading);
+      document.getElementById('card-romaji').textContent = item.romaji;
+      document.getElementById('card-meaning-zh').textContent = item.meaning_zh;
+      document.getElementById('card-pos').textContent = item.pos;
+      document.getElementById('card-back-japanese').innerHTML = buildFuriganaHTML(item.kanji, item.reading);
+
+      const isFav = favorites.has(item.id);
+      const favBtn = document.getElementById('card-fav-btn');
+      favBtn.innerHTML = `<i class="${isFav ? 'fa-solid text-amber-400' : 'fa-far'} fa-star text-lg"></i>`;
+
+      const card = document.getElementById('flashcard');
+      card.style.transform = 'rotateY(0deg)';
+      isFlipped = false;
+    }
+
+    function flipCard() {
+      const card = document.getElementById('flashcard');
+      isFlipped = !isFlipped;
+      card.style.transform = isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)';
+    }
+
+    function nextCard() {
+      if (cardIndex < filteredVocab.length - 1) {
+        cardIndex++;
+        renderCard();
+      }
+    }
+
+    function prevCard() {
+      if (cardIndex > 0) {
+        cardIndex--;
+        renderCard();
+      }
+    }
+
+    function playCurrentAudio(el) {
+      if (filteredVocab.length > 0) {
+        playAudio(filteredVocab[cardIndex].reading, el);
+      }
+    }
+
+    function toggleCardFavorite() {
+      if (filteredVocab.length > 0) {
+        toggleStar(filteredVocab[cardIndex].id);
+        renderCard();
+      }
+    }
+
+    function toggleAutoPlay() {
+      const btn = document.getElementById('autoplay-btn');
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+        btn.innerHTML = `<i class="fa-solid fa-play mr-1 text-blue-600"></i> 自動輪播`;
+      } else {
+        btn.innerHTML = `<i class="fa-solid fa-pause mr-1 text-red-600"></i> 停止輪播`;
+        playCurrentAudio();
+        autoPlayTimer = setInterval(() => {
+          if (cardIndex < filteredVocab.length - 1) {
+            nextCard();
+            playCurrentAudio();
+          } else {
+            toggleAutoPlay();
+          }
+        }, 3500);
+      }
+    }
+
+    // 3. MULTIPLE CHOICE QUIZ ENGINE (題型多樣化：日→中 / 中→日 隨機交錯，同一回合不重複單字)
+    let quizQuestionTypes = [];
+
+    function startQuiz() {
+      if (filteredVocab.length < 4) {
+        showCustomResult("無法啟動測驗", "目前選取的單字少於 4 個，無法組成選擇題！", "fa-triangle-exclamation");
+        return;
+      }
+
+      const count = resolveSessionCount(filteredVocab.length);
+      quizQuestions = shuffleArray(filteredVocab).slice(0, count);
+      quizQuestionTypes = quizQuestions.map(() => (Math.random() < 0.5 ? 'jp2zh' : 'zh2jp'));
+      quizQuestionIndex = 0;
+      quizScore = 0;
+
+      document.getElementById('quiz-score-text').textContent = "0 分";
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      const q = quizQuestions[quizQuestionIndex];
+      const qType = quizQuestionTypes[quizQuestionIndex];
+      document.getElementById('quiz-progress-text').textContent = `問題 ${quizQuestionIndex + 1} / ${quizQuestions.length}`;
+
+      const typeLabel = document.getElementById('quiz-question-type');
+      const wordEl = document.getElementById('quiz-question-word');
+      const subEl = document.getElementById('quiz-question-sub');
+
+      // 建立不重複的干擾選項（同一題內4個選項來自不同單字）
+      let options = [q];
+      while (options.length < 4 && options.length < rawVocabulary.length) {
+        const randItem = rawVocabulary[Math.floor(Math.random() * rawVocabulary.length)];
+        if (!options.find(o => o.id === randItem.id)) options.push(randItem);
+      }
+      options = shuffleArray(options);
+
+      const container = document.getElementById('quiz-options-container');
+
+      if (qType === 'jp2zh') {
+        typeLabel.textContent = "請選擇對應的中文意思";
+        wordEl.innerHTML = buildFuriganaHTML(q.kanji, q.reading);
+        subEl.textContent = q.kanji === q.reading ? '' : q.reading;
+        container.innerHTML = options.map((opt, i) => `
+          <button onclick="checkQuizAnswer(this, ${opt.id === q.id})" class="quiz-opt-btn w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-left font-bold text-slate-800 hover:bg-indigo-50 hover:border-indigo-300 transition text-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <span class="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-500 font-mono text-xs flex items-center justify-center">${i + 1}</span>
+              <span>${escapeHtml(opt.meaning_zh)}</span>
+            </div>
+            <i class="fa-regular fa-circle text-slate-300"></i>
+          </button>
+        `).join('');
+      } else {
+        typeLabel.textContent = "請選擇對應的日文單字";
+        wordEl.textContent = q.meaning_zh;
+        subEl.textContent = '';
+        container.innerHTML = options.map((opt, i) => `
+          <button onclick="checkQuizAnswer(this, ${opt.id === q.id})" class="quiz-opt-btn w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-left font-bold text-slate-800 hover:bg-indigo-50 hover:border-indigo-300 transition text-sm flex items-center justify-between font-jp">
+            <div class="flex items-center space-x-2">
+              <span class="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-500 font-mono text-xs flex items-center justify-center font-sans">${i + 1}</span>
+              <span>${buildFuriganaHTML(opt.kanji, opt.reading)}</span>
+            </div>
+            <i class="fa-regular fa-circle text-slate-300"></i>
+          </button>
+        `).join('');
+      }
+
+      document.getElementById('quiz-feedback-box').classList.add('hidden');
+      document.getElementById('quiz-next-btn').classList.add('hidden');
+
+      playAudio(q.reading);
+    }
+
+    function playQuizAudio(el) {
+      const q = quizQuestions[quizQuestionIndex];
+      if (q) playAudio(q.reading, el);
+    }
+
+    function checkQuizAnswer(btn, isCorrect) {
+      const allBtns = document.querySelectorAll('.quiz-opt-btn');
+      allBtns.forEach(b => b.disabled = true);
+      const q = quizQuestions[quizQuestionIndex];
+
+      const feedback = document.getElementById('quiz-feedback-box');
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+        btn.querySelector('i').className = "fa-solid fa-circle-check text-green-600";
+        feedback.className = "p-3.5 rounded-2xl text-center text-sm font-bold bg-green-50 text-green-700 border border-green-200";
+        feedback.textContent = "🎉 正確！答得很好！";
+        quizScore += 10;
+        document.getElementById('quiz-score-text').textContent = `${quizScore} 分`;
+        clearMistake(q.id);
+      } else {
+        btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+        btn.querySelector('i').className = "fa-solid fa-circle-xmark text-red-600";
+        feedback.className = "p-3.5 rounded-2xl text-center text-sm font-bold bg-red-50 text-red-700 border border-red-200";
+        feedback.innerHTML = `❌ 答錯了！正確答案是：${escapeHtml(q.meaning_zh)}（${buildFuriganaHTML(q.kanji, q.reading)}）`;
+        recordMistake(q.id);
+      }
+
+      document.getElementById('quiz-next-btn').classList.remove('hidden');
+    }
+
+    function nextQuizQuestion() {
+      if (quizQuestionIndex < quizQuestions.length - 1) {
+        quizQuestionIndex++;
+        renderQuizQuestion();
+      } else {
+        const high = parseInt(safeGet('app_quiz_high', '0'));
+        if (quizScore > high) safeSet('app_quiz_high', quizScore);
+
+        showCustomResult("多選測驗完成！", `您的總得分為：${quizScore} 分 / ${quizQuestions.length * 10}分`, "fa-trophy");
+        startQuiz();
+      }
+    }
+
+    // 4. LISTENING TEST ENGINE (同一回合不重複單字)
+    function startListeningTest() {
+      if (filteredVocab.length < 4) return;
+      const count = resolveSessionCount(filteredVocab.length);
+      listeningQuestions = shuffleArray(filteredVocab).slice(0, count);
+      listeningIndex = 0;
+      listeningScore = 0;
+      renderListeningQuestion();
+    }
+
+    function renderListeningQuestion() {
+      const q = listeningQuestions[listeningIndex];
+      document.getElementById('listening-score').textContent = `正確: ${listeningScore}`;
+
+      let options = [q];
+      while (options.length < 4 && options.length < rawVocabulary.length) {
+        const r = rawVocabulary[Math.floor(Math.random() * rawVocabulary.length)];
+        if (!options.find(o => o.id === r.id)) options.push(r);
+      }
+      options = shuffleArray(options);
+
+      const container = document.getElementById('listening-options');
+      container.innerHTML = options.map(opt => `
+        <button onclick="checkListeningAnswer(${opt.id === q.id}, ${q.id})" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-slate-800 hover:bg-indigo-50 hover:border-indigo-300 transition text-sm flex items-center justify-between font-jp">
+          <span>${buildFuriganaHTML(opt.kanji, opt.reading)} <span class="font-sans text-slate-500">(${escapeHtml(opt.meaning_zh)})</span></span>
+          <i class="fa-solid fa-volume-low text-slate-300"></i>
+        </button>
+      `).join('');
+
+      playListeningAudio();
+    }
+
+    function playListeningAudio(el) {
+      if (listeningQuestions[listeningIndex]) {
+        playAudio(listeningQuestions[listeningIndex].reading, el);
+      }
+    }
+
+    function checkListeningAnswer(isCorrect, qId) {
+      if (isCorrect) {
+        listeningScore++;
+        clearMistake(qId);
+      } else {
+        recordMistake(qId);
+      }
+
+      if (listeningIndex < listeningQuestions.length - 1) {
+        listeningIndex++;
+        renderListeningQuestion();
+      } else {
+        showCustomResult("聽力測驗完成", `答對率：${listeningScore} / ${listeningQuestions.length} 題`, "fa-headphones");
+        startListeningTest();
+      }
+    }
+
+    // 5. KANA SPELLING TEST WITH ROMAJI AUTO-CONVERT (佇列制，整輪不重複，用完才重新洗牌)
+    let currentSpellingItem = null;
+
+    function drawFromQueue(queueName) {
+      let queue = queueName === 'spelling' ? spellingQueue : speakQueue;
+      if (queue.length === 0) {
+        if (filteredVocab.length === 0) return null;
+        queue = shuffleArray(filteredVocab);
+      }
+      const item = queue.shift();
+      if (queueName === 'spelling') spellingQueue = queue; else speakQueue = queue;
+      return item;
+    }
+
+    function startSpellingTest() {
+      if (filteredVocab.length === 0) {
+        document.getElementById('spelling-kanji').textContent = '--';
+        return;
+      }
+      currentSpellingItem = drawFromQueue('spelling');
+      const item = currentSpellingItem;
+
+      document.getElementById('spelling-kanji').innerHTML = buildFuriganaHTML(item.kanji, item.reading);
+      document.getElementById('spelling-meaning').textContent = item.meaning_zh;
+      document.getElementById('spelling-input').value = "";
+      document.getElementById('spelling-result').classList.add('hidden');
+    }
+
+    function playSpellingAudio(el) {
+      if (currentSpellingItem) playAudio(currentSpellingItem.reading, el);
+    }
+
+    function checkSpellingAnswer() {
+      if (!currentSpellingItem) return;
+      const input = document.getElementById('spelling-input').value.trim().toLowerCase();
+      const targetKana = currentSpellingItem.reading;
+      const targetRomaji = currentSpellingItem.romaji.toLowerCase();
+      const res = document.getElementById('spelling-result');
+      res.classList.remove('hidden');
+
+      if (input === targetKana || input === targetRomaji) {
+        res.className = "p-3.5 rounded-2xl text-center font-bold text-sm bg-green-100 text-green-800 border border-green-300";
+        res.textContent = "🎉 完全拼寫正確！發音太棒了！";
+        clearMistake(currentSpellingItem.id);
+        setTimeout(() => startSpellingTest(), 1500);
+      } else {
+        res.className = "p-3.5 rounded-2xl text-center font-bold text-sm bg-red-100 text-red-800 border border-red-300";
+        res.textContent = `❌ 不太對喔！正確平假名為：${targetKana} (${targetRomaji})`;
+        recordMistake(currentSpellingItem.id);
+      }
+    }
+
+    // 6. PAIR MATCHING GAME ENGINE
+    function initMatchGame() {
+      if (filteredVocab.length < 6) {
+        document.getElementById('match-grid').innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">至少需要6個單字才能啟動連連看遊戲</div>`;
+        return;
+      }
+
+      const sample = [...filteredVocab].sort(() => 0.5 - Math.random()).slice(0, 6);
+      let cards = [];
+
+      sample.forEach(item => {
+        cards.push({ id: item.id, text: item.kanji, type: 'jp', reading: item.reading });
+        cards.push({ id: item.id, text: item.meaning_zh, type: 'zh', reading: item.reading });
+      });
+
+      cards.sort(() => 0.5 - Math.random());
+      matchCards = cards;
+      selectedMatchCards = [];
+      matchMoves = 0;
+      document.getElementById('match-moves').textContent = "0";
+
+      const grid = document.getElementById('match-grid');
+      grid.innerHTML = cards.map((card, idx) => `
+        <button id="match-card-${idx}" onclick="handleMatchCardClick(${idx})" class="relative h-24 bg-white border-2 border-slate-200 rounded-2xl flex items-center justify-center p-2 font-black text-slate-800 hover:border-indigo-400 transition text-center shadow-sm font-jp text-sm active:scale-95">
+          ${card.type === 'jp' ? `<i class="fa-solid fa-volume-high absolute top-1.5 right-1.5 text-indigo-300 text-[10px]"></i>` : ''}
+          ${card.type === 'jp' ? buildFuriganaHTML(card.text, card.reading) : escapeHtml(card.text)}
+        </button>
+      `).join('');
+    }
+
+    function handleMatchCardClick(idx) {
+      if (selectedMatchCards.length >= 2) return;
+      const cardEl = document.getElementById(`match-card-${idx}`);
+      if (cardEl.classList.contains('bg-green-100') || selectedMatchCards.find(c => c.idx === idx)) return;
+
+      cardEl.classList.add('border-blue-600', 'bg-blue-50');
+      selectedMatchCards.push({ idx, card: matchCards[idx] });
+
+      if (matchCards[idx].type === 'jp') {
+        playAudio(matchCards[idx].reading, cardEl);
+      }
+
+      if (selectedMatchCards.length === 2) {
+        matchMoves++;
+        document.getElementById('match-moves').textContent = matchMoves;
+        const [c1, c2] = selectedMatchCards;
+
+        if (c1.card.id === c2.card.id && c1.card.type !== c2.card.type) {
+          setTimeout(() => {
+            document.getElementById(`match-card-${c1.idx}`).className = "h-24 bg-green-100 border-2 border-green-500 rounded-2xl flex items-center justify-center p-2 font-bold text-green-800 text-center shadow-sm text-sm opacity-60 pointer-events-none";
+            document.getElementById(`match-card-${c2.idx}`).className = "h-24 bg-green-100 border-2 border-green-500 rounded-2xl flex items-center justify-center p-2 font-bold text-green-800 text-center shadow-sm text-sm opacity-60 pointer-events-none";
+            selectedMatchCards = [];
+
+            const matchedCount = document.querySelectorAll('.bg-green-100').length;
+            if (matchedCount === matchCards.length) {
+              const best = parseInt(safeGet('app_match_best', '999'));
+              if (matchMoves < best) safeSet('app_match_best', matchMoves);
+              showCustomResult("恭喜完成連連看！", `花費總步數：${matchMoves} 步`, "fa-puzzle-piece");
+            }
+          }, 300);
+        } else {
+          setTimeout(() => {
+            document.getElementById(`match-card-${c1.idx}`).classList.remove('border-blue-600', 'bg-blue-50');
+            document.getElementById(`match-card-${c2.idx}`).classList.remove('border-blue-600', 'bg-blue-50');
+            selectedMatchCards = [];
+          }, 700);
+        }
+      }
+    }
+
+    // 7. SPEAKING PRACTICE ENGINE (Web Speech API 語音辨識，佇列制不重複單字)
+    let SpeechRecognitionAPI = null;
+    let currentSpeakItem = null;
+
+    function initSpeakModeSupport() {
+      SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+    }
+
+    function startSpeakSession() {
+      const unsupportedBox = document.getElementById('speak-unsupported');
+      const contentBox = document.getElementById('speak-content');
+      if (!SpeechRecognitionAPI) {
+        unsupportedBox.classList.remove('hidden');
+        contentBox.classList.add('hidden');
+        return;
+      }
+      unsupportedBox.classList.add('hidden');
+      contentBox.classList.remove('hidden');
+
+      if (filteredVocab.length === 0) return;
+      nextSpeakWord();
+    }
+
+    function nextSpeakWord() {
+      if (filteredVocab.length === 0) return;
+      currentSpeakItem = drawFromQueue('speak');
+      const item = currentSpeakItem;
+      document.getElementById('speak-kanji').innerHTML = buildFuriganaHTML(item.kanji, item.reading);
+      document.getElementById('speak-meaning').textContent = item.meaning_zh;
+      document.getElementById('speak-progress').textContent = `第 ${filteredVocab.length - speakQueue.length} / ${filteredVocab.length} 個`;
+      document.getElementById('speak-result').classList.add('hidden');
+      document.getElementById('speak-hint').textContent = '點擊麥克風後請對著手機/電腦清楚唸出上方單字';
+    }
+
+    function playSpeakAudio(el) {
+      if (currentSpeakItem) playAudio(currentSpeakItem.reading, el);
+    }
+
+    function normalizeForCompare(str) {
+      return String(str || '')
+        .replace(/[\s。、,.！？!?「」『』・~〜ー]/g, '')
+        .toLowerCase();
+    }
+
+    function toggleRecording() {
+      if (!SpeechRecognitionAPI) return;
+      if (isRecording) {
+        speechRecognizer && speechRecognizer.stop();
+        return;
+      }
+      if (!currentSpeakItem) return;
+
+      const micBtn = document.getElementById('speak-mic-btn');
+      const hint = document.getElementById('speak-hint');
+      const resultBox = document.getElementById('speak-result');
+
+      try {
+        speechRecognizer = new SpeechRecognitionAPI();
+        speechRecognizer.lang = 'ja-JP';
+        speechRecognizer.interimResults = false;
+        speechRecognizer.maxAlternatives = 3;
+        speechRecognizer.continuous = false;
+
+        speechRecognizer.onstart = () => {
+          isRecording = true;
+          micBtn.classList.add('mic-recording');
+          hint.textContent = '🎙️ 錄音中…請清楚唸出單字';
+          resultBox.classList.add('hidden');
+        };
+
+        speechRecognizer.onresult = (event) => {
+          const alternatives = [];
+          for (let i = 0; i < event.results[0].length; i++) {
+            alternatives.push(event.results[0][i].transcript);
+          }
+          evaluateSpeakResult(alternatives);
+        };
+
+        speechRecognizer.onerror = (event) => {
+          let msg = '辨識發生問題，請再試一次。';
+          if (event.error === 'not-allowed' || event.error === 'permission-denied') {
+            msg = '⚠️ 麥克風權限被拒絕，請至瀏覽器設定允許麥克風存取後再試。';
+          } else if (event.error === 'no-speech') {
+            msg = '⚠️ 沒有偵測到語音，請靠近麥克風並再試一次。';
+          } else if (event.error === 'audio-capture') {
+            msg = '⚠️ 找不到可用的麥克風裝置。';
+          } else if (event.error === 'network') {
+            msg = '⚠️ 網路連線問題，語音辨識暫時無法使用。';
+          }
+          resultBox.className = "p-3.5 rounded-2xl text-left text-sm bg-amber-50 text-amber-800 border border-amber-200";
+          resultBox.textContent = msg;
+          resultBox.classList.remove('hidden');
+        };
+
+        speechRecognizer.onend = () => {
+          isRecording = false;
+          micBtn.classList.remove('mic-recording');
+          hint.textContent = '點擊麥克風後請對著手機/電腦清楚唸出上方單字';
+        };
+
+        speechRecognizer.start();
+      } catch (e) {
+        isRecording = false;
+        resultBox.className = "p-3.5 rounded-2xl text-left text-sm bg-amber-50 text-amber-800 border border-amber-200";
+        resultBox.textContent = '⚠️ 無法啟動語音辨識，此瀏覽器可能不支援或未授權麥克風。';
+        resultBox.classList.remove('hidden');
+      }
+    }
+
+    function evaluateSpeakResult(alternatives) {
+      const target = normalizeForCompare(currentSpeakItem.reading);
+      const targetKanji = normalizeForCompare(currentSpeakItem.kanji);
+      let bestRatio = 0;
+      let bestTranscript = alternatives[0] || '';
+
+      alternatives.forEach(alt => {
+        const norm = normalizeForCompare(alt);
+        const ratio = Math.max(similarityRatio(norm, target), similarityRatio(norm, targetKanji));
+        if (ratio > bestRatio) { bestRatio = ratio; bestTranscript = alt; }
+      });
+
+      const resultBox = document.getElementById('speak-result');
+      resultBox.classList.remove('hidden');
+
+      if (bestRatio >= 0.85) {
+        resultBox.className = "p-3.5 rounded-2xl text-left text-sm bg-green-50 text-green-800 border border-green-200 space-y-1";
+        resultBox.innerHTML = `<p class="font-bold">🎉 發音辨識完全正確！</p><p>系統聽到：「${escapeHtml(bestTranscript)}」</p>`;
+        clearMistake(currentSpeakItem.id);
+      } else if (bestRatio >= 0.55) {
+        resultBox.className = "p-3.5 rounded-2xl text-left text-sm bg-blue-50 text-blue-800 border border-blue-200 space-y-1";
+        resultBox.innerHTML = `<p class="font-bold">👍 大致正確，可再更清晰一點</p><p>系統聽到：「${escapeHtml(bestTranscript)}」</p><p>正確讀音：${escapeHtml(currentSpeakItem.reading)}</p>`;
+      } else {
+        resultBox.className = "p-3.5 rounded-2xl text-left text-sm bg-red-50 text-red-800 border border-red-200 space-y-1";
+        resultBox.innerHTML = `<p class="font-bold">❌ 辨識結果不符，再試一次！</p><p>系統聽到：「${escapeHtml(bestTranscript)}」</p><p>正確讀音：${escapeHtml(currentSpeakItem.reading)}</p>`;
+        recordMistake(currentSpeakItem.id);
+      }
+    }
+
+    function showCustomResult(title, desc, iconClass) {
+      document.getElementById('result-title').textContent = title;
+      document.getElementById('result-desc').textContent = desc;
+      document.getElementById('result-icon').className = `fa-solid ${iconClass}`;
+      document.getElementById('result-modal').classList.remove('hidden');
+    }
+
+    function closeResultModal() {
+      document.getElementById('result-modal').classList.add('hidden');
+    }
+
+    function openTTSSettings() {
+      document.getElementById('tts-modal').classList.remove('hidden');
+    }
+
+    function closeTTSSettings() {
+      document.getElementById('tts-modal').classList.add('hidden');
+    }
+
+    function updateSpeechRate(val) {
+      ttsRate = parseFloat(val);
+      document.getElementById('speed-val').textContent = val;
+    }
+
+    function updateSpeechPitch(val) {
+      ttsPitch = parseFloat(val);
+      document.getElementById('pitch-val').textContent = val;
+    }
+
+    function testTTS(el) {
+      playAudio("こんにちは、日本語の勉強をがんばってください", el);
+    }
+
+    function openStatsModal() {
+      document.getElementById('stat-fav-count').textContent = `${favorites.size} 個`;
+      document.getElementById('stat-quiz-high').textContent = `${safeGet('app_quiz_high', '0')} 分`;
+      document.getElementById('stat-mistake-count').textContent = `${wrongWords.size} 個`;
+
+      const matchBest = safeGet('app_match_best', '');
+      document.getElementById('stat-match-best').textContent = matchBest ? `${matchBest} 步` : '-- 步';
+
+      document.getElementById('stats-modal').classList.remove('hidden');
+    }
+
+    function closeStatsModal() {
+      document.getElementById('stats-modal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
